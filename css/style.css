@@ -132,7 +132,7 @@ button{font:inherit; cursor:none; border:none; background:none;}
 }
 
 /* ============ LAYOUT HELPERS ============ */
-.wrap{max-width:1080px; margin:0 auto; padding:0 28px;}
+.wrap{max-width:1080px;     margin: 0 auto 50px auto; padding:0 28px;}
 section{padding:120px 0 0;}
 @media (max-width:720px){ section{padding-top:76px;} }
 @media (max-width:480px){ section{padding-top:56px;} }
