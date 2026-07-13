@@ -1,33 +1,9 @@
 /* =========================================================
-   Ahmed Ali — Portfolio Interactions
+   Hamza Sheikh — Portfolio Interactions
    Cursor, scroll reveals, animated rings/bars, typewriter.
    ========================================================= */
 
-/* ---------- Theme (dark/light) — runs immediately, before paint, to avoid a flash ---------- */
-(function initTheme(){
-  const saved = localStorage.getItem('theme');
-  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-  const theme = saved || (prefersDark ? 'dark' : 'light');
-  if (theme === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
-})();
-
 document.addEventListener('DOMContentLoaded', () => {
-
-  /* ---------- Theme toggle buttons (desktop + mobile menu) ---------- */
-  const themeToggles = [document.getElementById('theme-toggle'), document.getElementById('theme-toggle-mobile')]
-    .filter(Boolean);
-  themeToggles.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-      if (isDark) {
-        document.documentElement.removeAttribute('data-theme');
-        localStorage.setItem('theme', 'light');
-      } else {
-        document.documentElement.setAttribute('data-theme', 'dark');
-        localStorage.setItem('theme', 'dark');
-      }
-    });
-  });
 
   /* ---------- Custom cursor (dot + lagging ring) ---------- */
   const dot = document.getElementById('cursor-dot');
@@ -50,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
       requestAnimationFrame(animateRing);
     })();
 
-    const hoverables = document.querySelectorAll('a, button, .project-card, .expertise-card, .tag, .tools-strip .tag, .hex-item, .skill-node, input, textarea');
+    const hoverables = document.querySelectorAll('a, button, .project-card, .expertise-card, .tag, .tools-strip .tag, input, textarea');
     hoverables.forEach(el => {
       el.addEventListener('mouseenter', () => ring.classList.add('hovered'));
       el.addEventListener('mouseleave', () => ring.classList.remove('hovered'));
@@ -69,6 +45,20 @@ document.addEventListener('DOMContentLoaded', () => {
       btn.addEventListener('mouseleave', () => {
         btn.style.transform = 'translate(0,0)';
       });
+    });
+  }
+
+  /* ---------- Theme toggle ---------- */
+  const themeToggle = document.getElementById('theme-toggle');
+  if (themeToggle) {
+    themeToggle.addEventListener('click', () => {
+      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      if (isDark) {
+        document.documentElement.removeAttribute('data-theme');
+      } else {
+        document.documentElement.setAttribute('data-theme', 'dark');
+      }
+      try { localStorage.setItem('theme', isDark ? 'light' : 'dark'); } catch (e) {}
     });
   }
 
@@ -115,6 +105,139 @@ document.addEventListener('DOMContentLoaded', () => {
       setTimeout(tick, deleting ? 45 : 65);
     }
     tick();
+  }
+
+  /* ---------- Chatbot widget ---------- */
+  const chatWidget = document.getElementById('chatbot-widget');
+  const chatToggle = document.getElementById('chatbot-toggle');
+  const chatMinimize = document.getElementById('chatbot-minimize');
+  const chatMessages = document.getElementById('chatbot-messages');
+  const chatForm = document.getElementById('chatbot-form');
+  const chatInput = document.getElementById('chatbot-input');
+
+  if (chatWidget && chatToggle && chatForm) {
+    let chatHistory = [];
+    let sending = false;
+
+    const openChat = () => chatWidget.classList.add('open');
+    const closeChat = () => chatWidget.classList.remove('open');
+
+    chatToggle.addEventListener('click', () => {
+      chatWidget.classList.contains('open') ? closeChat() : openChat();
+    });
+    if (chatMinimize) chatMinimize.addEventListener('click', closeChat);
+
+    function addMessage(text, role) {
+      const div = document.createElement('div');
+      div.className = 'chatbot-msg ' + role;
+      div.textContent = text; // textContent only: never render visitor/AI text as HTML
+      chatMessages.appendChild(div);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+      return div;
+    }
+
+    function addTyping() {
+      const div = document.createElement('div');
+      div.className = 'chatbot-msg bot typing';
+      div.innerHTML = '<span></span><span></span><span></span>';
+      chatMessages.appendChild(div);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+      return div;
+    }
+
+    chatForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const text = chatInput.value.trim();
+      if (!text || sending) return;
+
+      addMessage(text, 'user');
+      chatHistory.push({ role: 'user', content: text });
+      chatInput.value = '';
+      sending = true;
+
+      const typingEl = addTyping();
+
+      try {
+        const res = await fetch('/api/chatbot', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ messages: chatHistory })
+        });
+
+        let data;
+        try {
+          data = await res.json();
+        } catch {
+          throw new Error('bad response');
+        }
+
+        typingEl.remove();
+
+        if (data.reply) {
+          addMessage(data.reply, 'bot');
+          chatHistory.push({ role: 'assistant', content: data.reply });
+        } else {
+          addMessage(data.error || 'Something went wrong. Please try again.', 'error');
+        }
+      } catch (err) {
+        typingEl.remove();
+        addMessage('Could not reach the server. If this is running from a local file:// path, deploy it to Vercel first.', 'error');
+      } finally {
+        sending = false;
+      }
+    });
+  }
+
+  /* ---------- Contact form -> contact.php ---------- */
+  const contactForm = document.getElementById('contact-form');
+  const formStatus = document.getElementById('form-status');
+  const submitBtn = document.getElementById('cf-submit');
+
+  if (contactForm) {
+    contactForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      formStatus.textContent = '';
+      formStatus.className = 'form-status';
+      submitBtn.disabled = true;
+      const originalLabel = submitBtn.textContent;
+      submitBtn.textContent = 'Sending…';
+
+      try {
+        const formData = new FormData(contactForm);
+        const payload = Object.fromEntries(formData.entries());
+
+        const response = await fetch('/api/contact', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        // api/contact.js always returns JSON, even on validation errors —
+        // but guard against something serving an HTML error page instead.
+        let data;
+        try {
+          data = await response.json();
+        } catch {
+          throw new Error('Server did not return a valid response.');
+        }
+
+        if (data.success) {
+          formStatus.textContent = "Thanks — your message is on its way. I'll reply within a day or two.";
+          formStatus.className = 'form-status success';
+          contactForm.reset();
+        } else {
+          formStatus.textContent = data.error || 'Something went wrong. Please try again.';
+          formStatus.className = 'form-status error';
+        }
+      } catch (err) {
+        formStatus.textContent = 'Could not reach the server. If this is running from a local file:// path, deploy it to Vercel first.';
+        formStatus.className = 'form-status error';
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalLabel;
+      }
+    });
   }
 
   /* ---------- Scroll reveal ---------- */
@@ -204,53 +327,5 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }, { threshold: 0.4 });
   counters.forEach(c => countIO.observe(c));
-
-  /* ---------- Contact form: sends to /api/contact (Vercel serverless function), which emails you.
-     Falls back to a pre-filled mailto: link if the API can't be reached, so the visitor
-     always has a working way to send their message. ---------- */
-  const contactForm = document.getElementById('contact-form');
-  const formNote = document.getElementById('form-note');
-  if (contactForm) {
-    contactForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const btn = contactForm.querySelector('button[type="submit"]');
-      btn.disabled = true;
-      formNote.classList.remove('is-error');
-      formNote.innerHTML = 'Sending...';
-
-      const formData = new FormData(contactForm);
-      const payload = Object.fromEntries(formData.entries());
-
-      function mailtoFallback(reason){
-        formNote.classList.add('is-error');
-        const subject = encodeURIComponent(`Portfolio message from ${payload.name || 'a visitor'}`);
-        const body = encodeURIComponent(`${payload.message || ''}\n\n— ${payload.name || ''} (${payload.email || ''})`);
-        const mailto = `mailto:ahmed.ali@email.com?subject=${subject}&body=${body}`;
-        formNote.innerHTML = `${reason} <a href="${mailto}">Click here to send it by email instead</a> — your message has been kept in the form.`;
-      }
-
-      try {
-        const res = await fetch('/api/contact', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
-
-        if (!res.ok) { mailtoFallback('Could not reach the contact server.'); return; }
-
-        const data = await res.json();
-        if (data.success) {
-          formNote.textContent = "Thanks — your message has been sent. I'll reply within a day or two.";
-          contactForm.reset();
-        } else {
-          mailtoFallback(data.error || 'Something went wrong sending that.');
-        }
-      } catch (err) {
-        mailtoFallback('Could not send automatically (this page may not be running on a live server).');
-      } finally {
-        btn.disabled = false;
-      }
-    });
-  }
 
 });

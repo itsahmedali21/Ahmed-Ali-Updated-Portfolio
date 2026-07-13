@@ -1,4 +1,6 @@
+# Real SMTP credentials — never commit this. Copy config.example.php to
+# config.php locally / upload it directly to your host instead.
+config.php
+
+# Node dependencies for the Vercel serverless functions in /api
 node_modules/
-.vercel
-.env
-.env.local

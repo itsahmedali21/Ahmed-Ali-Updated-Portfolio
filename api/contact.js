@@ -1,22 +1,19 @@
 /**
  * api/contact.js
- * Vercel serverless function — receives the portfolio contact form and
- * emails it to you using Nodemailer + Gmail SMTP.
- *
- * This is the Vercel-compatible replacement for contact.php (Vercel does
- * not run PHP). Same idea, same Gmail App Password approach, just Node.js.
+ * Vercel serverless function — Node.js equivalent of contact.php.
+ * Vercel does not execute PHP, so this replaces contact.php + PHPMailer +
+ * config.php for the live site. contact.php itself is left untouched in
+ * case you ever host this on a PHP server elsewhere.
  *
  * ---- ONE-TIME SETUP ----
- * 1. In your Vercel project: Settings → Environment Variables, add:
- *      SMTP_USERNAME = your Gmail address
- *      SMTP_PASSWORD = your 16-character Gmail App Password (no quotes)
- *      TO_EMAIL       = the address you want messages delivered to
- *    (You already generated an App Password earlier for contact.php —
- *    the same one works here.)
- * 2. Redeploy after adding the env vars (Vercel only picks them up on a
- *    new deployment).
+ * In your Vercel project: Settings → Environment Variables, add:
+ *   SMTP_USERNAME = itsahmedali21@gmail.com   (the Gmail from config.php)
+ *   SMTP_PASSWORD = the 16-character Gmail App Password from config.php
+ *   TO_EMAIL      = itsahmedali21@gmail.com   (where messages should land)
+ * Redeploy after adding them (Vercel only picks up env vars on a new build).
  *
- * Do NOT hardcode the password here — env vars keep it out of your git repo.
+ * Do NOT put these in a committed file — env vars keep them out of git,
+ * same reason config.php was gitignored.
  */
 
 const nodemailer = require('nodemailer');
@@ -34,7 +31,6 @@ module.exports = async (req, res) => {
     return;
   }
 
-  // Very basic email sanity check (mirrors the PHP version's validation)
   const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailPattern.test(email)) {
     res.status(200).json({ success: false, error: 'Please enter a valid email address.' });
