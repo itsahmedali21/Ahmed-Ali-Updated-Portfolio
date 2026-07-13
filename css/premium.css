@@ -1,0 +1,281 @@
+/* =========================================================
+   Premium / AI Feature Styles
+   Loaded after style.css — reuses the same CSS custom
+   properties (--bg, --surface, --accent, --vibe, etc.) so
+   every new component matches the existing theme in both
+   light and dark mode automatically.
+   ========================================================= */
+
+/* ---------- Reduced motion respect (accessibility) ---------- */
+@media (prefers-reduced-motion: reduce){
+  *{ animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; scroll-behavior:auto !important; }
+}
+
+/* ---------- Focus visibility (accessibility) ---------- */
+a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible{
+  outline:2px solid var(--accent);
+  outline-offset:3px;
+  border-radius:4px;
+}
+
+/* ---------- Glassmorphism utility ---------- */
+.glass-panel{
+  background:var(--glass);
+  backdrop-filter:blur(18px) saturate(160%);
+  -webkit-backdrop-filter:blur(18px) saturate(160%);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow-card);
+}
+
+/* ---------- Section entrance polish ---------- */
+section{ animation:fadeIn .6s ease both; }
+@keyframes fadeIn{ from{ opacity:0; transform:translateY(8px);} to{ opacity:1; transform:translateY(0);} }
+
+/* =========================================================
+   Skill map heading (sits between restored bars and the map)
+   ========================================================= */
+.skill-map-heading{ margin:36px 0 18px; }
+.skill-map-heading .eyebrow{ margin-bottom:6px; }
+
+/* =========================================================
+   Tools — honeycomb section
+   ========================================================= */
+.tools-hex{ display:flex; flex-direction:column; align-items:center; gap:28px; padding:20px 0 10px; position:relative; }
+.tools-hex-center{
+  width:64px; height:64px; border-radius:50%;
+  background:var(--surface); border:1px solid var(--accent);
+  display:flex; align-items:center; justify-content:center;
+  font-family:var(--font-mono); font-weight:600; color:var(--accent);
+  box-shadow:0 0 0 8px var(--accent-soft);
+}
+.tools-hex-ring{ display:flex; flex-wrap:wrap; justify-content:center; gap:26px 22px; max-width:900px; }
+.hex-item{ display:flex; flex-direction:column; align-items:center; gap:10px; width:96px; }
+.hex-shape{
+  width:72px; height:64px;
+  clip-path:polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+  background:var(--surface); border:1px solid var(--line);
+  display:flex; align-items:center; justify-content:center;
+  font-family:var(--font-mono); font-weight:700; font-size:.8rem; color:var(--ink);
+  transition:transform .25s ease, border-color .25s ease, box-shadow .25s ease, background .25s ease;
+}
+.hex-shape.vibe{ color:var(--vibe); }
+.hex-item span{ font-size:.78rem; color:var(--ink-soft); text-align:center; }
+.hex-item:hover .hex-shape{ transform:translateY(-4px) scale(1.05); border-color:var(--accent); box-shadow:0 12px 26px rgba(47,95,255,.25); background:var(--accent-soft); }
+.hex-item:nth-child(even) .hex-shape{ margin-top:26px; }
+@media (max-width:680px){
+  .hex-item:nth-child(even) .hex-shape{ margin-top:0; }
+  .hex-item{ width:80px; }
+  .hex-shape{ width:60px; height:54px; font-size:.72rem; }
+}
+
+/* =========================================================
+   AI Portfolio Guide
+   ========================================================= */
+#ai-guide{ position:fixed; right:24px; bottom:96px; z-index:60; }
+#ai-guide-toggle{
+  display:flex; align-items:center; gap:8px;
+  background:var(--accent); color:#fff; border:none; border-radius:999px;
+  padding:12px 18px; font-family:var(--font-display); font-weight:600; font-size:.9rem;
+  cursor:pointer; box-shadow:0 12px 30px rgba(47,95,255,.35);
+  transition:transform .25s ease, box-shadow .25s ease;
+}
+#ai-guide-toggle:hover{ transform:translateY(-2px); box-shadow:0 16px 36px rgba(47,95,255,.45); }
+.ai-guide-toggle-icon{ font-size:1rem; }
+
+#ai-guide-panel{
+  position:absolute; right:0; bottom:64px; width:340px; max-width:86vw;
+  display:flex; flex-direction:column; overflow:hidden;
+  animation:guideIn .28s cubic-bezier(.22,.9,.3,1) both;
+}
+#ai-guide-panel[hidden]{ display:none !important; }
+@keyframes guideIn{ from{ opacity:0; transform:translateY(12px) scale(.98);} to{ opacity:1; transform:translateY(0) scale(1);} }
+
+.ai-guide-head{ display:flex; align-items:center; justify-content:space-between; padding:16px 16px 12px; border-bottom:1px solid var(--line); }
+.ai-guide-title{ font-family:var(--font-display); font-weight:600; }
+.ai-guide-sub{ font-size:.72rem; color:var(--muted); margin-top:2px; }
+#ai-guide-close{ background:none; border:none; color:var(--ink-soft); font-size:1.3rem; cursor:pointer; line-height:1; }
+
+.ai-guide-log{ padding:14px 16px; max-height:280px; overflow-y:auto; display:flex; flex-direction:column; gap:10px; }
+.ai-guide-msg{ max-width:88%; padding:10px 13px; border-radius:14px; font-size:.86rem; line-height:1.5; }
+.ai-guide-msg.from-guide{ background:var(--surface-2); align-self:flex-start; border-bottom-left-radius:4px; }
+.ai-guide-msg.from-user{ background:var(--accent); color:#fff; align-self:flex-end; border-bottom-right-radius:4px; }
+.ai-guide-jump{ align-self:flex-start; background:none; border:1px solid var(--accent); color:var(--accent); border-radius:999px; padding:6px 12px; font-size:.78rem; cursor:pointer; }
+.ai-guide-jump:hover{ background:var(--accent-soft); }
+
+.ai-guide-quick{ display:flex; flex-wrap:wrap; gap:6px; padding:0 16px 12px; }
+.ai-guide-chip{ background:var(--surface-2); border:1px solid var(--line); border-radius:999px; padding:6px 11px; font-size:.76rem; cursor:pointer; color:var(--ink); }
+.ai-guide-chip:hover{ border-color:var(--accent); color:var(--accent); }
+
+.ai-guide-form{ display:flex; gap:8px; padding:12px 16px; border-top:1px solid var(--line); }
+.ai-guide-form input{ flex:1; background:var(--surface-2); border:1px solid var(--line); border-radius:999px; padding:9px 14px; font-size:.84rem; color:var(--ink); }
+.ai-guide-form button{ background:var(--accent); color:#fff; border:none; border-radius:999px; width:36px; height:36px; cursor:pointer; }
+
+@media (max-width:520px){
+  #ai-guide{ right:14px; bottom:84px; }
+  #ai-guide-panel{ width:88vw; }
+}
+
+/* =========================================================
+   Interactive Skill Map
+   ========================================================= */
+.skill-map-nodes{ display:grid; gap:22px; }
+.skill-map-group-title{ font-family:var(--font-display); font-weight:600; color:var(--ink-soft); font-size:.85rem; text-transform:uppercase; letter-spacing:.06em; margin-bottom:10px; }
+.skill-map-bubbles{ display:flex; flex-wrap:wrap; gap:10px; }
+.skill-node{
+  display:flex; align-items:center; gap:8px;
+  background:var(--surface); border:1px solid var(--line); border-radius:999px;
+  padding:9px 14px; cursor:pointer; font-size:.85rem; color:var(--ink);
+  transition:transform .2s ease, border-color .2s ease, box-shadow .2s ease;
+}
+.skill-node-level{ color:var(--muted); font-family:var(--font-mono); font-size:.72rem; }
+.skill-node:hover{ transform:translateY(-2px); border-color:var(--accent); box-shadow:var(--shadow-card); }
+.skill-node.active{ border-color:var(--accent); background:var(--accent-soft); color:var(--accent); }
+.skill-node.active .skill-node-level{ color:var(--accent); }
+
+.skill-detail-panel{ margin-top:22px; padding:22px; }
+.skill-detail-head{ display:flex; align-items:baseline; justify-content:space-between; gap:12px; margin-bottom:8px; }
+.skill-detail-head h4{ font-family:var(--font-display); font-size:1.15rem; }
+.skill-detail-level{ font-family:var(--font-mono); color:var(--accent); font-weight:600; }
+.skill-detail-exp{ color:var(--ink-soft); font-size:.92rem; margin-bottom:16px; }
+.skill-detail-block{ margin-top:14px; }
+.skill-detail-label{ font-size:.72rem; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); margin-bottom:8px; }
+.skill-detail-projects{ display:flex; flex-wrap:wrap; gap:8px; }
+.skill-detail-project-chip{ background:var(--surface-2); border:1px solid var(--line); border-radius:999px; padding:6px 12px; font-size:.78rem; color:var(--ink); text-decoration:none; }
+.skill-detail-project-chip:hover{ border-color:var(--accent); color:var(--accent); }
+.skill-detail-project-chip.cert{ border-color:var(--accent-2); color:var(--accent-2); }
+.skill-detail-empty{ color:var(--muted); font-size:.82rem; }
+
+/* =========================================================
+   Developer Mode
+   ========================================================= */
+.dev-mode-bar{
+  display:flex; align-items:center; justify-content:space-between; gap:12px;
+  background:var(--surface); border:1px solid var(--line); border-radius:var(--radius);
+  padding:14px 18px; margin-bottom:28px;
+}
+.dev-mode-bar-text{ font-size:.86rem; color:var(--ink-soft); }
+.dev-mode-bar-text b{ color:var(--ink); }
+.toggle-switch{ position:relative; display:inline-flex; align-items:center; width:46px; height:26px; background:var(--surface-2); border:1px solid var(--line); border-radius:999px; cursor:pointer; flex-shrink:0; }
+.toggle-switch::after{ content:''; position:absolute; left:3px; top:3px; width:18px; height:18px; border-radius:50%; background:var(--ink-soft); transition:transform .22s ease, background .22s ease; }
+.toggle-switch[aria-pressed="true"]{ border-color:var(--accent); background:var(--accent-soft); }
+.toggle-switch[aria-pressed="true"]::after{ transform:translateX(20px); background:var(--accent); }
+
+.dev-panel{ display:none; margin-top:18px; padding-top:18px; border-top:1px dashed var(--line); }
+body.dev-mode .dev-panel{ display:block; animation:fadeIn .35s ease both; }
+.dev-panel-head{ font-family:var(--font-mono); font-size:.72rem; text-transform:uppercase; letter-spacing:.08em; color:var(--vibe); margin-bottom:12px; }
+.dev-row{ margin-bottom:12px; }
+.dev-row-label{ font-size:.72rem; color:var(--muted); text-transform:uppercase; letter-spacing:.05em; margin-bottom:4px; }
+.dev-row p, .dev-row ul{ font-size:.84rem; color:var(--ink-soft); }
+.dev-row ul{ padding-left:18px; }
+.dev-row li{ margin-bottom:2px; }
+
+body.dev-mode #analytics-dashboard-block{ display:block; }
+#analytics-dashboard-block{ display:none; }
+
+/* =========================================================
+   Future Roadmap
+   ========================================================= */
+.roadmap-filters{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:26px; }
+.roadmap-filters button{
+  background:var(--surface); border:1px solid var(--line); border-radius:999px;
+  padding:7px 14px; font-size:.8rem; cursor:pointer; color:var(--ink-soft);
+}
+.roadmap-filters button.active{ border-color:var(--accent); color:var(--accent); background:var(--accent-soft); }
+
+.roadmap-timeline{ position:relative; padding-left:26px; }
+.roadmap-timeline::before{ content:''; position:absolute; left:6px; top:6px; bottom:6px; width:2px; background:var(--line); }
+.roadmap-item{ position:relative; padding-bottom:26px; }
+.roadmap-item:last-child{ padding-bottom:0; }
+.roadmap-dot{ position:absolute; left:-26px; top:4px; width:14px; height:14px; border-radius:50%; background:var(--surface); border:2px solid var(--accent); }
+.roadmap-item.status-planned .roadmap-dot{ border-color:var(--muted); }
+.roadmap-item.status-goal .roadmap-dot{ border-color:var(--accent-2); }
+.roadmap-meta{ display:flex; gap:10px; align-items:center; margin-bottom:4px; }
+.roadmap-date{ font-family:var(--font-mono); font-size:.74rem; color:var(--muted); }
+.roadmap-status{ font-size:.7rem; text-transform:uppercase; letter-spacing:.05em; color:var(--accent); background:var(--accent-soft); padding:2px 8px; border-radius:999px; }
+.roadmap-item h4{ font-family:var(--font-display); margin-bottom:4px; }
+.roadmap-item p{ color:var(--ink-soft); font-size:.9rem; }
+
+/* =========================================================
+   Project Playground
+   ========================================================= */
+.playground{ margin-top:18px; padding-top:18px; border-top:1px dashed var(--line); }
+.playground-head{ font-size:.72rem; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); margin-bottom:10px; }
+.playground-mock{
+  --pg-accent:#2F5FFF; --pg-bg:#0B0D12;
+  background:var(--pg-bg); border-radius:10px; padding:16px; margin-bottom:10px;
+  transition:background .3s ease;
+}
+.playground-mock-bar{ width:40px; height:6px; border-radius:3px; background:var(--pg-accent); margin-bottom:10px; transition:background .3s ease; }
+.playground-mock-title{ color:#fff; font-family:var(--font-display); font-size:.95rem; margin-bottom:10px; }
+.playground-mock-btn{ display:inline-block; background:var(--pg-accent); color:#fff; font-size:.78rem; padding:7px 14px; border-radius:8px; transition:background .3s ease; }
+.playground-swatches{ display:flex; flex-wrap:wrap; gap:8px; }
+.playground-swatch{ --sw:#2F5FFF; display:flex; align-items:center; gap:6px; background:var(--surface-2); border:1px solid var(--line); border-radius:999px; padding:5px 11px 5px 6px; font-size:.75rem; cursor:pointer; color:var(--ink); }
+.playground-swatch::before{ content:''; width:14px; height:14px; border-radius:50%; background:var(--sw); display:inline-block; }
+.playground-swatch.active{ border-color:var(--sw); }
+
+/* =========================================================
+   Live Project Status
+   ========================================================= */
+.status-list-root{ display:grid; gap:20px; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); }
+.status-card{ padding:22px; }
+.status-card-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
+.status-card-head h4{ font-family:var(--font-display); }
+.status-live-dot{ font-size:.72rem; color:var(--good); }
+.status-progress-track{ height:8px; border-radius:999px; background:var(--surface-2); overflow:hidden; margin-bottom:8px; }
+.status-progress-fill{ height:100%; background:linear-gradient(90deg, var(--accent), var(--vibe)); border-radius:999px; transition:width 1s cubic-bezier(.22,.9,.3,1); }
+.status-progress-label{ font-size:.82rem; color:var(--ink-soft); margin-bottom:16px; }
+.status-grid{ display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:14px; }
+.status-label{ font-size:.7rem; text-transform:uppercase; letter-spacing:.05em; color:var(--muted); margin-bottom:8px; }
+.status-list{ list-style:none; font-size:.82rem; color:var(--ink-soft); display:flex; flex-direction:column; gap:6px; }
+.status-list li span{ display:block; font-family:var(--font-mono); font-size:.7rem; color:var(--muted); }
+.status-updated{ font-size:.76rem; color:var(--muted); border-top:1px solid var(--line); padding-top:12px; }
+@media (max-width:520px){ .status-grid{ grid-template-columns:1fr; } }
+
+/* =========================================================
+   AI Resume Generator
+   ========================================================= */
+.resume-controls{ display:flex; flex-wrap:wrap; gap:12px; align-items:center; margin-bottom:24px; }
+.resume-controls select{
+  background:var(--surface); border:1px solid var(--line); border-radius:var(--radius-sm);
+  padding:10px 14px; font-size:.88rem; color:var(--ink); font-family:var(--font-body);
+}
+.resume-doc{ padding:28px; background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); max-width:640px; }
+.resume-doc-head h3{ font-family:var(--font-display); font-size:1.4rem; }
+.resume-doc-role{ color:var(--accent); font-weight:600; margin-top:2px; }
+.resume-doc-contact{ color:var(--muted); font-size:.82rem; margin-top:4px; }
+.resume-doc-section{ margin-top:20px; padding-top:16px; border-top:1px solid var(--line); }
+.resume-doc-section h4{ font-size:.75rem; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); margin-bottom:8px; }
+.resume-doc-skills{ list-style:none; display:grid; grid-template-columns:1fr 1fr; gap:6px; font-size:.86rem; }
+.resume-doc-project{ margin-bottom:10px; }
+.resume-doc-project-title{ font-weight:600; font-size:.9rem; }
+.resume-doc-project-title span{ font-weight:400; color:var(--ink-soft); }
+.resume-doc-project-tags{ font-family:var(--font-mono); font-size:.74rem; color:var(--muted); margin-top:2px; }
+
+/* Printable resume: hide everything else when printing */
+@media print{
+  body.printing-resume > *:not(#resume-generator){ display:none !important; }
+  body.printing-resume #resume-generator > *:not(.resume-doc-wrap){ display:none !important; }
+  body.printing-resume .resume-doc{ border:none; box-shadow:none; }
+  #cursor-dot, #cursor-ring, #ai-guide, .whatsapp-float{ display:none !important; }
+}
+
+/* =========================================================
+   Analytics Dashboard
+   ========================================================= */
+.analytics-loading{ color:var(--muted); font-size:.85rem; padding:12px 0; }
+.analytics-grid{ display:grid; grid-template-columns:repeat(3, 1fr); gap:12px; margin-bottom:18px; }
+.analytics-stat{ background:var(--surface-2); border-radius:var(--radius-sm); padding:14px; text-align:center; }
+.analytics-num{ font-family:var(--font-display); font-size:1.3rem; font-weight:700; color:var(--accent); }
+.analytics-label{ font-size:.7rem; color:var(--muted); margin-top:2px; }
+.analytics-lists{ display:grid; grid-template-columns:repeat(3, 1fr); gap:16px; }
+.analytics-chips{ display:flex; flex-wrap:wrap; gap:6px; }
+.analytics-chip{ display:flex; align-items:center; gap:6px; background:var(--surface-2); border:1px solid var(--line); border-radius:999px; padding:5px 10px; font-size:.74rem; color:var(--ink-soft); }
+.analytics-chip b{ color:var(--accent); font-family:var(--font-mono); font-weight:600; }
+.analytics-chip-empty{ color:var(--muted); font-size:.78rem; }
+@media (max-width:640px){ .analytics-grid, .analytics-lists{ grid-template-columns:1fr; } }
+
+/* =========================================================
+   Section polish shared bits
+   ========================================================= */
+.section-sub{ color:var(--ink-soft); margin-top:-8px; margin-bottom:28px; max-width:60ch; }

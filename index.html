@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="index, follow">
+
+<title>Ahmed Ali — Frontend Developer &amp; Vibe Coder</title>
+<meta name="description" content="Ahmed Ali is a frontend developer and vibe coder who also builds in Webflow and handles SEO — turning ideas into fast, search-ready websites, with or without a line of hand-written code.">
+<link rel="canonical" href="https://www.ahmedali.dev/">
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://www.ahmedali.dev/">
+<meta property="og:title" content="Ahmed Ali — Frontend Developer, Webflow Expert, SEO Specialist &amp; Vibe Coder">
+<meta property="og:description" content="Fast, search-optimized websites — hand-written, built in Webflow, or vibe-coded with AI.">
+<meta property="og:image" content="https://www.ahmedali.dev/assets/og-image.png">
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Ahmed Ali — Frontend Developer, Webflow Expert, SEO Specialist &amp; Vibe Coder">
+<meta name="twitter:description" content="Fast, search-optimized websites — hand-written, built in Webflow, or vibe-coded with AI.">
+<meta name="twitter:image" content="https://www.ahmedali.dev/assets/og-image.png">
+
+<!-- Favicon: inline SVG monogram, no external file needed -->
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%232F5FFF'/%3E%3Ctext x='50' y='66' font-size='40' font-family='monospace' font-weight='700' fill='white' text-anchor='middle'%3EAA%3C/text%3E%3C/svg%3E">
+
+<!--
+  EDIT ME FIRST:
+  - Domain: replace "ahmedali.dev" throughout (this file, robots.txt, sitemap.xml) with your real domain once you have one.
+  - Social links: GitHub / LinkedIn / Webflow / email in the Contact section, footer, and the JSON-LD block below are placeholders — update them.
+  - The 4 project cards are your real projects — double check the descriptions match how you'd want to present them, and swap in the two remaining testimonials once you have real client quotes.
+  - Add a real 1200x630 image at /assets/og-image.png and update the two og:image / twitter:image tags above.
+  - Replace /assets/resume.pdf with your real CV (a placeholder file is included so the button doesn't 404).
+  - WhatsApp button (bottom-right, in the WhatsApp comment near </body>): replace "92XXXXXXXXXX" with your real number, country code first, no + or 00.
+  See README.md for the full checklist.
+-->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/premium.css">
+<meta name="theme-color" content="#F7F8FA" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0B0D12" media="(prefers-color-scheme: dark)">
+
+<!-- Set theme before first paint, so there's no flash of the wrong theme -->
+<script>
+(function(){
+  try {
+    var saved = localStorage.getItem('theme');
+    var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    if (saved === 'dark' || (!saved && prefersDark)) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    }
+  } catch (e) {}
+})();
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Ahmed Ali",
+  "url": "https://www.ahmedali.dev",
+  "jobTitle": "Frontend Developer, Webflow Expert, SEO Specialist & Vibe Coder",
+  "knowsAbout": ["Frontend Development", "Webflow", "Search Engine Optimization", "JavaScript", "Technical SEO", "Core Web Vitals", "AI-Assisted Development"],
+  "sameAs": [
+    "https://github.com/ahmedali",
+    "https://www.linkedin.com/in/ahmedali",
+    "https://webflow.com/@ahmedali"
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  "itemListElement": [
+    { "@type": "CreativeWork", "position": 1, "name": "DevicesArena", "url": "https://devicesarena.com/", "description": "Smartphone review and comparison platform." },
+    { "@type": "CreativeWork", "position": 2, "name": "Muse AI", "url": "https://muse-ai-ahmed.webflow.io/", "description": "AI SaaS landing page built in Webflow." },
+    { "@type": "CreativeWork", "position": 3, "name": "Umrah Tours", "url": "https://umrah-tours.webflow.io/", "description": "Pilgrimage travel agency site built in Webflow." },
+    { "@type": "CreativeWork", "position": 4, "name": "Exam Portal", "url": "https://exam-portal.infinityfreeapp.com/", "description": "Online exam portal with a live leaderboard, vibe-coded." }
+  ]
+}
+</script>
+</head>
+<body>
+
+<div id="cursor-dot"></div>
+<div id="cursor-ring"></div>
+
+<header>
+  <div class="browser-bar">
+    <div class="traffic"><span></span><span></span><span></span></div>
+    <div class="address"><b>ahmed</b>ali.dev</div>
+    <nav class="tabs">
+      <a href="#about">About</a>
+      <a href="#expertise">Expertise</a>
+      <a href="#projects">Projects</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark/light theme">
+      <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path></svg>
+      <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+    </button>
+    <button class="hamburger" id="hamburger" aria-label="Toggle menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+  <nav class="mobile-menu" id="mobile-menu">
+    <a href="#about">About</a>
+    <a href="#expertise">Expertise</a>
+    <a href="#skills">Skills</a>
+    <a href="#tools">Tools</a>
+    <a href="#projects">Projects</a>
+    <a href="#roadmap">Roadmap</a>
+    <a href="#resume-generator">Resume</a>
+    <a href="#contact">Contact</a>
+    <div class="theme-toggle-mobile">
+      <span>Theme</span>
+      <button class="theme-toggle" id="theme-toggle-mobile" aria-label="Toggle dark/light theme">
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path></svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+      </button>
+    </div>
+  </nav>
+</header>
+
+<!-- ============ HERO ============ -->
+<section class="hero wrap">
+  <div class="hero-grid">
+
+    <div class="hero-content">
+      <div class="hero-eyebrow reveal"><span class="dot"></span> available for freelance work</div>
+
+      <h1 class="hero-name reveal">Ahmed Ali</h1>
+      <div class="hero-role reveal"><span id="typed-role"></span><span class="caret"></span></div>
+
+      <p class="hero-desc reveal">
+        I build fast, search-optimized websites — hand-written, in Webflow, or
+        vibe-coded with AI — and make sure they actually get found on Google
+        once they're live.
+      </p>
+
+      <div class="hero-cta reveal">
+        <a href="#projects" class="btn btn-primary">View Projects</a>
+        <a href="#contact" class="btn btn-ghost">Get in Touch</a>
+        <!-- EDIT ME: replace /assets/resume.pdf with your real CV file -->
+        <a href="/assets/Ahmed_Ali_CV_v2.docx" download class="btn btn-outline">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+          Download CV
+        </a>
+      </div>
+    </div>
+
+    <div class="audit-card reveal">
+      <div class="audit-tabbar">
+        <div class="traffic"><span></span><span></span><span></span></div>
+        <div class="address">build-report.dev</div>
+      </div>
+      <div class="audit-body">
+        <div class="audit-label">The standard every project ships to</div>
+
+        <div class="rings-row">
+          <div class="ring-item">
+            <svg viewBox="0 0 84 84">
+              <g transform="rotate(-90 42 42)">
+                <circle class="ring-track" cx="42" cy="42" r="34" stroke-width="6"></circle>
+                <circle class="ring-fill" data-value="95" cx="42" cy="42" r="34" stroke-width="6"></circle>
+              </g>
+              <text class="ring-num" x="42" y="47" text-anchor="middle">95</text>
+            </svg>
+            <div class="ring-label">Performance</div>
+          </div>
+
+          <div class="ring-item">
+            <svg viewBox="0 0 84 84">
+              <g transform="rotate(-90 42 42)">
+                <circle class="ring-track" cx="42" cy="42" r="34" stroke-width="6"></circle>
+                <circle class="ring-fill" data-value="95" cx="42" cy="42" r="34" stroke-width="6"></circle>
+              </g>
+              <text class="ring-num" x="42" y="47" text-anchor="middle">95</text>
+            </svg>
+            <div class="ring-label">Accessibility</div>
+          </div>
+
+          <div class="ring-item">
+            <svg viewBox="0 0 84 84">
+              <g transform="rotate(-90 42 42)">
+                <circle class="ring-track" cx="42" cy="42" r="34" stroke-width="6"></circle>
+                <circle class="ring-fill" data-value="100" cx="42" cy="42" r="34" stroke-width="6"></circle>
+              </g>
+              <text class="ring-num" x="42" y="47" text-anchor="middle">100</text>
+            </svg>
+            <div class="ring-label">Best Practices</div>
+          </div>
+
+          <div class="ring-item">
+            <svg viewBox="0 0 84 84">
+              <g transform="rotate(-90 42 42)">
+                <circle class="ring-track" cx="42" cy="42" r="34" stroke-width="6"></circle>
+                <circle class="ring-fill" data-value="100" cx="42" cy="42" r="34" stroke-width="6"></circle>
+              </g>
+              <text class="ring-num" x="42" y="47" text-anchor="middle">100</text>
+            </svg>
+            <div class="ring-label">SEO</div>
+          </div>
+        </div>
+
+        <div class="sparkline-box">
+          <svg viewBox="0 0 140 60">
+            <path class="spark-path" d="M2,48 L23,42 L44,45 L65,26 L86,32 L107,12 L124,16 L138,4" />
+          </svg>
+          <div class="spark-caption">Every build aims to grow in search,<br>not just go live.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============ ABOUT ============ -->
+<section id="about" class="wrap">
+  <div class="eyebrow">about</div>
+  <h2 class="section-title reveal">Code, Webflow, search, and a good prompt</h2>
+
+  <div class="about-grid">
+    <div class="about-text reveal">
+      <p>I'm <strong>Ahmed Ali</strong>, a frontend developer based in Pakistan who also builds in
+         <strong>Webflow</strong>, handles <strong>SEO</strong>, and leans heavily on
+         <strong>AI-assisted ("vibe coding")</strong> workflows — four different routes to the
+         same result: a fast site that's built right and easy to find.</p>
+      <p>On the code side, I work in HTML, CSS and JavaScript, with React when a project calls
+         for it — and a good share of that is vibe-coded with tools like Claude and Cursor, going
+         from idea to working build fast. On the Webflow side, I build CMS-driven sites clients
+         can update without touching a line of code. On the SEO side, I run technical audits, fix
+         Core Web Vitals, and turn keyword research into a real content and internal-linking plan.</p>
+      <p>Most projects start as a Figma file — or just a prompt — and end as a live site that
+         ranks, not just one that looks good in a portfolio screenshot.</p>
+    </div>
+
+    <div class="about-stats reveal">
+      <div class="stat-card">
+        <div class="num">15+</div>
+        <div class="label">projects shipped</div>
+      </div>
+      <div class="stat-card">
+        <div class="num">3+</div>
+        <div class="label">years across dev, Webflow, SEO &amp; AI-assisted builds</div>
+      </div>
+      <div class="stat-card">
+        <div class="num"><span data-count-to="100" data-suffix="%">0%</span></div>
+        <div class="label">of builds ship with on-page SEO basics done</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ EXPERTISE ============ -->
+<section id="expertise" class="wrap">
+  <div class="eyebrow">expertise</div>
+  <h2 class="section-title reveal">Four skills, one workflow</h2>
+  <p class="section-sub reveal">Most clients end up needing more than one. Here's what each one covers.</p>
+
+  <div class="expertise-grid">
+    <div class="expertise-card reveal">
+      <div class="expertise-glyph">&lt;/&gt;</div>
+      <h3>Frontend Development</h3>
+      <p>Semantic, accessible interfaces built with clean HTML, CSS and JavaScript — fast by
+         default, not as an afterthought.</p>
+      <div class="expertise-tags">
+        <span>HTML5</span><span>CSS3</span><span>JavaScript</span><span>React</span>
+      </div>
+    </div>
+
+    <div class="expertise-card reveal">
+      <div class="expertise-glyph">W</div>
+      <h3>Webflow Development</h3>
+      <p>Custom Webflow builds with CMS collections, interactions, and a clean handoff so
+         clients can edit content themselves.</p>
+      <div class="expertise-tags">
+        <span>Webflow CMS</span><span>Interactions</span><span>Client Handoff</span>
+      </div>
+    </div>
+
+    <div class="expertise-card reveal">
+      <div class="expertise-glyph">↑</div>
+      <h3>SEO Optimization</h3>
+      <p>Technical audits, on-page fixes, and keyword strategy that turn a finished site into
+         a growth channel instead of a dead end.</p>
+      <div class="expertise-tags">
+        <span>Technical SEO</span><span>On-Page SEO</span><span>Core Web Vitals</span>
+      </div>
+    </div>
+
+    <div class="expertise-card reveal">
+      <div class="expertise-glyph vibe">⚡</div>
+      <h3>Vibe Coding (AI-Assisted Dev)</h3>
+      <p>Building fast by prompting, iterating, and shipping with tools like Claude and
+         Cursor — the workflow behind a growing share of new products in 2026.</p>
+      <div class="expertise-tags">
+        <span>Claude</span><span>Cursor</span><span>Rapid Prototyping</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SKILLS / INTERACTIVE SKILL MAP ============ -->
+<section id="skills" class="wrap">
+  <div class="eyebrow">skills</div>
+  <h2 class="section-title reveal">Proficiency, by discipline</h2>
+
+  <div class="skills-grid">
+    <div class="reveal">
+      <div class="skill-group-title">Frontend</div>
+      <div class="skill-row">
+        <div class="skill-top"><b>HTML &amp; CSS</b><span>96%</span></div>
+        <div class="bar-track"><div class="bar-fill" data-width="96"></div></div>
+      </div>
+      <div class="skill-row">
+        <div class="skill-top"><b>JavaScript</b><span>90%</span></div>
+        <div class="bar-track"><div class="bar-fill" data-width="90"></div></div>
+      </div>
+      <div class="skill-row">
+        <div class="skill-top"><b>React</b><span>82%</span></div>
+        <div class="bar-track"><div class="bar-fill" data-width="82"></div></div>
+      </div>
+    </div>
+
+    <div class="reveal">
+      <div class="skill-group-title">Webflow</div>
+      <div class="skill-row">
+        <div class="skill-top"><b>Webflow Designer</b><span>92%</span></div>
+        <div class="bar-track"><div class="bar-fill" data-width="92"></div></div>
+      </div>
+      <div class="skill-row">
+        <div class="skill-top"><b>CMS &amp; Interactions</b><span>88%</span></div>
+        <div class="bar-track"><div class="bar-fill" data-width="88"></div></div>
+      </div>
+      <div class="skill-row">
+        <div class="skill-top"><b>Client Handoff / Training</b><span>90%</span></div>
+        <div class="bar-track"><div class="bar-fill" data-width="90"></div></div>
+      </div>
+    </div>
+
+    <div class="reveal">
+      <div class="skill-group-title">SEO</div>
+      <div class="skill-row">
+        <div class="skill-top"><b>Technical SEO</b><span>90%</span></div>
+        <div class="bar-track"><div class="bar-fill" data-width="90"></div></div>
+      </div>
+      <div class="skill-row">
+        <div class="skill-top"><b>On-Page &amp; Keyword Strategy</b><span>94%</span></div>
+        <div class="bar-track"><div class="bar-fill" data-width="94"></div></div>
+      </div>
+      <div class="skill-row">
+        <div class="skill-top"><b>Core Web Vitals</b><span>89%</span></div>
+        <div class="bar-track"><div class="bar-fill" data-width="89"></div></div>
+      </div>
+    </div>
+
+    <div class="reveal">
+      <div class="skill-group-title vibe">Vibe Coding</div>
+      <div class="skill-row">
+        <div class="skill-top"><b>Prompt-Driven Development</b><span>93%</span></div>
+        <div class="bar-track"><div class="bar-fill vibe" data-width="93"></div></div>
+      </div>
+      <div class="skill-row">
+        <div class="skill-top"><b>Rapid Prototyping</b><span>90%</span></div>
+        <div class="bar-track"><div class="bar-fill vibe" data-width="90"></div></div>
+      </div>
+      <div class="skill-row">
+        <div class="skill-top"><b>AI Tool Fluency</b><span>95%</span></div>
+        <div class="bar-track"><div class="bar-fill vibe" data-width="95"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="skill-map-heading reveal">
+    <div class="eyebrow">explore further</div>
+    <p class="section-sub">Click any skill below to see the real projects, tech, and experience behind it.</p>
+  </div>
+  <div id="skill-map-root" class="reveal"></div>
+</section>
+
+<!-- ============ TOOLS (honeycomb) ============ -->
+<section id="tools" class="wrap">
+  <div class="eyebrow">tools</div>
+  <h2 class="section-title reveal">Tools I reach for daily</h2>
+
+  <div class="tools-hex reveal">
+    <div class="tools-hex-center">
+      <span>&lt;/&gt;</span>
+    </div>
+    <div class="tools-hex-ring">
+      <div class="hex-item"><div class="hex-shape">🅵</div><span>Figma</span></div>
+      <div class="hex-item"><div class="hex-shape">VS</div><span>VS Code</span></div>
+      <div class="hex-item"><div class="hex-shape">W</div><span>Webflow</span></div>
+      <div class="hex-item"><div class="hex-shape vibe">✦</div><span>Claude</span></div>
+      <div class="hex-item"><div class="hex-shape vibe">▷</div><span>Cursor</span></div>
+      <div class="hex-item"><div class="hex-shape">git</div><span>Git &amp; GitHub</span></div>
+      <div class="hex-item"><div class="hex-shape">↑</div><span>Ahrefs</span></div>
+      <div class="hex-item"><div class="hex-shape">GA</div><span>Google Analytics</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PROJECTS ============ -->
+<section id="projects" class="wrap">
+  <div class="eyebrow">projects</div>
+  <h2 class="section-title reveal">Real projects, four different ways of building</h2>
+
+  <div class="dev-mode-bar reveal">
+    <div class="dev-mode-bar-text"><b>Developer Mode</b> — reveal tech stack, challenges, architecture notes, and AI tools used on every project below.</div>
+    <button type="button" id="dev-mode-toggle" class="toggle-switch" aria-pressed="false" aria-label="Toggle developer mode"></button>
+  </div>
+
+  <div id="analytics-dashboard-block" class="glass-panel reveal" style="padding:22px; margin-bottom:28px;">
+    <div class="dev-panel-head">Analytics</div>
+    <div id="analytics-dashboard-root"></div>
+  </div>
+
+  <div class="projects-list">
+
+    <div class="project-card reveal" data-project-id="devicesarena">
+      <div class="project-chrome">
+        <div class="traffic"><span></span><span></span><span></span></div>
+        <div class="project-url">devicesarena.com</div>
+        <div class="project-category cat-code">Pure Code</div>
+      </div>
+      <div class="project-body">
+        <div class="project-thumb thumb-code">Full-Stack Platform</div>
+        <div class="project-info">
+          <h3>DevicesArena — Smartphone Reviews &amp; Comparisons</h3>
+          <p>A full smartphone review and comparison platform — a device database, a
+             spec-by-spec compare tool, a phone finder, dozens of brand pages, Google-authenticated
+             accounts, and a live news section. Hand-coded end to end, no page builder involved.</p>
+          <div class="project-tags">
+            <span>Full-Stack</span><span>Custom Auth</span><span>Device Database</span><span>Compare Tool</span>
+          </div>
+          <div class="project-links">
+            <a href="https://devicesarena.com/" target="_blank" rel="noopener">Live Site →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="project-card reveal" data-project-id="muse-ai">
+      <div class="project-chrome">
+        <div class="traffic"><span></span><span></span><span></span></div>
+        <div class="project-url">muse-ai-ahmed.webflow.io</div>
+        <div class="project-category cat-webflow">Webflow Build</div>
+      </div>
+      <div class="project-body">
+        <div class="project-thumb thumb-webflow">AI SaaS Landing Page</div>
+        <div class="project-info">
+          <h3>Muse AI — SaaS Landing Page</h3>
+          <p>A ChatGPT-style AI-tool landing page built entirely in Webflow — animated stat
+             counters, tiered pricing, a testimonial layout, and a full marketing-site structure
+             from hero to footer.</p>
+          <div class="project-tags">
+            <span>Webflow</span><span>Pricing Tables</span><span>Animated Interactions</span>
+          </div>
+          <div class="project-links">
+            <a href="https://muse-ai-ahmed.webflow.io/" target="_blank" rel="noopener">Live Site →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="project-card reveal" data-project-id="umrah-tours">
+      <div class="project-chrome">
+        <div class="traffic"><span></span><span></span><span></span></div>
+        <div class="project-url">umrah-tours.webflow.io</div>
+        <div class="project-category cat-webflow">Webflow Build</div>
+      </div>
+      <div class="project-body">
+        <div class="project-thumb thumb-webflow-alt">Travel &amp; Pilgrimage Site</div>
+        <div class="project-info">
+          <h3>Umrah Tours — Pilgrimage Travel Agency</h3>
+          <p>A full travel-agency site for Umrah packages — tiered package pages, a guide/blog
+             section for first-time pilgrims, an FAQ built around real visa and pricing questions,
+             and on-page SEO groundwork across every page.</p>
+          <div class="project-tags">
+            <span>Webflow CMS</span><span>Blog &amp; Guides</span><span>On-Page SEO</span>
+          </div>
+          <div class="project-links">
+            <a href="https://umrah-tours.webflow.io/" target="_blank" rel="noopener">Live Site →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="project-card reveal" data-project-id="exam-portal">
+      <div class="project-chrome">
+        <div class="traffic"><span></span><span></span><span></span></div>
+        <div class="project-url">exam-portal.infinityfreeapp.com</div>
+        <div class="project-category cat-vibe">Vibe Coded</div>
+      </div>
+      <div class="project-body">
+        <div class="project-thumb thumb-vibe">Exam Portal + Leaderboard</div>
+        <div class="project-info">
+          <h3>Exam Portal — Online Exams &amp; Leaderboard</h3>
+          <p>A full-stack exam portal with student login, exam delivery, and a live "Top
+             Students" leaderboard served through its own PHP API. Built almost entirely through
+             AI-assisted prompting — vibe-coded from idea to a deployed, working app.</p>
+          <div class="project-tags">
+            <span>PHP API</span><span>Vibe Coded</span><span>Student Leaderboard</span>
+          </div>
+          <div class="project-links">
+            <a href="https://exam-portal.infinityfreeapp.com/" target="_blank" rel="noopener">Live Site →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============ LIVE PROJECT STATUS ============ -->
+<section id="project-status" class="wrap">
+  <div class="eyebrow">live status</div>
+  <h2 class="section-title reveal">What's actively in progress</h2>
+  <p class="section-sub reveal">Real-time-ish snapshots — progress, current milestone, and changelog for projects still being built on.</p>
+  <div id="project-status-root" class="status-list-root"></div>
+</section>
+
+<!-- ============ FUTURE ROADMAP ============ -->
+<section id="roadmap" class="wrap">
+  <div class="eyebrow">roadmap</div>
+  <h2 class="section-title reveal">Where this is headed</h2>
+  <p class="section-sub reveal">Learning goals, planned projects, and career milestones — updated as things actually happen, not aspirationally.</p>
+
+  <div id="roadmap-filters" class="roadmap-filters reveal">
+    <button type="button" data-filter="all" class="active">All</button>
+    <button type="button" data-filter="in-progress">In progress</button>
+    <button type="button" data-filter="planned">Planned</button>
+    <button type="button" data-filter="goal">Career goals</button>
+  </div>
+
+  <div id="roadmap-root" class="roadmap-timeline"></div>
+</section>
+
+<!-- ============ AI RESUME GENERATOR ============ -->
+<section id="resume-generator" class="wrap">
+  <div class="eyebrow">ai resume generator</div>
+  <h2 class="section-title reveal">Get a resume tailored to your role</h2>
+  <p class="section-sub reveal">Pick what you're hiring for — the generator composes a resume from this portfolio's real skills and project data.</p>
+
+  <div class="resume-controls reveal">
+    <select id="resume-role-select" aria-label="Choose a target role">
+      <option value="frontend">Frontend Developer</option>
+      <option value="fullstack">Full-Stack Developer</option>
+      <option value="uiux">UI/UX Designer</option>
+      <option value="ai">AI Engineer / AI-Assisted Developer</option>
+      <option value="seo">SEO Specialist</option>
+    </select>
+    <button type="button" id="resume-download" class="btn btn-outline" hidden>Download .txt</button>
+    <button type="button" id="resume-print" class="btn btn-ghost" hidden>Print / Save as PDF</button>
+  </div>
+
+  <div class="resume-doc-wrap reveal">
+    <div id="resume-output" hidden></div>
+  </div>
+</section>
+
+<!-- ============ TESTIMONIALS ============ -->
+<!-- Replace with real client testimonials before publishing -->
+<section id="testimonials" class="wrap">
+  <div class="eyebrow">testimonials</div>
+  <h2 class="section-title reveal">What clients say</h2>
+
+  <div class="testimonial-grid">
+    <div class="testimonial-card reveal">
+      <p class="quote">Ahmed rebuilt our site in Webflow and traffic started climbing within
+         two months. Communication was effortless the entire time.</p>
+      <div class="testimonial-who"><b>Client Name</b> — Founder, Placeholder Co.</div>
+    </div>
+    <div class="testimonial-card reveal">
+      <p class="quote">Clean code and a sharp eye for detail — but what stood out is that he
+         explained the SEO decisions instead of just making them quietly.</p>
+      <div class="testimonial-who"><b>Client Name</b> — Marketing Lead, Placeholder Co.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONTACT ============ -->
+<section id="contact" class="wrap">
+  <div class="eyebrow">contact</div>
+  <h2 class="section-title reveal">Let's work together</h2>
+
+  <div class="contact-box reveal">
+    <div>
+      <h3>Have a project in mind?</h3>
+      <p>Send a message and I'll reply within a day or two — happy to talk through a
+         redesign, a new build, or an SEO audit.</p>
+      <div class="social-row">
+        <a href="#" title="GitHub">GH</a>
+        <a href="#" title="LinkedIn">IN</a>
+        <a href="#" title="Webflow">W</a>
+        <a href="#" title="Email">@</a>
+      </div>
+    </div>
+    <form id="contact-form" onsubmit="return false;">
+      <div class="field">
+        <label>Name</label>
+        <input type="text" name="name" placeholder="Your name" required>
+      </div>
+      <div class="field">
+        <label>Email</label>
+        <input type="email" name="email" placeholder="you@email.com" required>
+      </div>
+      <div class="field">
+        <label>Message</label>
+        <textarea name="message" placeholder="Tell me about your project..." required></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary">Send Message</button>
+      <p class="form-note" id="form-note"></p>
+    </form>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap footer-row">
+    <span>© 2026 Ahmed Ali — built with HTML, CSS &amp; JS</span>
+    <span><a href="#">ahmed.ali@email.com</a> · view source for the schema markup 🔍</span>
+  </div>
+</footer>
+
+<!-- WhatsApp quick-contact — EDIT ME: replace 92XXXXXXXXXX with your real WhatsApp number (country code, no + or 00) -->
+<a href="https://wa.me/03118292234?text=Hi%20Ahmed%2C%20I%20found%20your%20portfolio%20and%20would%20like%20to%20talk%20about%20a%20project."
+   class="whatsapp-float" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">
+  <span class="whatsapp-tooltip">Chat on WhatsApp</span>
+  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.46 1.32 4.96L2.05 22l5.25-1.38a9.9 9.9 0 0 0 4.74 1.21h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.86 9.86 0 0 0 12.04 2zm0 18.15h-.01a8.23 8.23 0 0 1-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.22 8.22 0 0 1-1.26-4.38c0-4.54 3.7-8.24 8.26-8.24 2.2 0 4.27.86 5.83 2.42a8.18 8.18 0 0 1 2.41 5.83c0 4.54-3.7 8.23-8.24 8.23zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.17.25-.64.81-.78.97-.14.17-.29.19-.54.06-.25-.12-1.04-.38-1.98-1.22-.73-.65-1.23-1.46-1.37-1.71-.14-.25-.02-.38.11-.51.11-.11.25-.29.37-.43.12-.14.16-.25.25-.41.08-.17.04-.31-.02-.44-.06-.12-.56-1.36-.77-1.86-.2-.48-.41-.42-.56-.43-.14-.01-.31-.01-.48-.01-.17 0-.44.06-.67.31-.23.25-.87.86-.87 2.09 0 1.23.9 2.42 1.02 2.59.12.17 1.76 2.7 4.28 3.78.6.26 1.06.41 1.43.53.6.19 1.14.16 1.57.1.48-.07 1.47-.6 1.68-1.18.21-.58.21-1.08.14-1.18-.06-.11-.23-.17-.48-.29z"/></svg>
+</a>
+
+<script src="js/data.js" defer></script>
+<script src="js/analytics.js" defer></script>
+<script src="js/ai-guide.js" defer></script>
+<script src="js/skill-map.js" defer></script>
+<script src="js/dev-mode.js" defer></script>
+<script src="js/roadmap.js" defer></script>
+<script src="js/playground.js" defer></script>
+<script src="js/project-status.js" defer></script>
+<script src="js/resume-generator.js" defer></script>
+<script src="js/analytics-dashboard.js" defer></script>
+<script src="js/main.js" defer></script>
+</body>
+</html>

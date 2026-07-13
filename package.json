@@ -1,0 +1,11 @@
+{
+  "name": "ahmed-ali-portfolio",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Ahmed Ali portfolio — static site + Vercel serverless contact form.",
+  "dependencies": {
+    "nodemailer": "^6.9.14",
+    "@upstash/redis": "^1.34.0",
+    "redis": "^4.7.0"
+  }
+}
