@@ -210,8 +210,8 @@ document.addEventListener('DOMContentLoaded', function () {
     counters.forEach(function (el) { observer.observe(el); });
   })();
 
-  // -----------------------------------------------------------
-  // 6. CONTACT FORM -> contact.php (AJAX)
+// -----------------------------------------------------------
+  // 6. CONTACT FORM -> /api/contact (Vercel serverless function, AJAX)
   // -----------------------------------------------------------
   (function contactForm() {
     const form = document.getElementById('contact-form');
@@ -232,11 +232,6 @@ document.addEventListener('DOMContentLoaded', function () {
         return;
       }
 
-      const formData = new FormData();
-      formData.append('name', name);
-      formData.append('email', email);
-      formData.append('message', message);
-
       if (submitBtn) {
         submitBtn.disabled = true;
         submitBtn.textContent = 'Sending…';
@@ -244,9 +239,10 @@ document.addEventListener('DOMContentLoaded', function () {
       status.textContent = 'Sending your message…';
       status.className = 'form-status';
 
-      fetch('contact.php', {
+      fetch('/api/contact', {
         method: 'POST',
-        body: formData
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: name, email: email, message: message })
       })
         .then(function (res) { return res.json(); })
         .then(function (data) {
@@ -287,6 +283,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const FACTS = {
       intro: "I'm Ahmed's portfolio assistant. Ask me about his skills, his projects, or how to reach him!",
+      about: "I'm Ahmed's portfolio assistant. Ask me about his skills, his projects, or how to reach him!",
       skills: "Ahmed works across four areas: Frontend (HTML5, CSS3, JavaScript, React), Webflow (CMS, Custom Interactions, Client Handoff), SEO (Technical SEO, On-Page SEO, Core Web Vitals, Keyword Research), and Vibe Coding (AI-assisted development with Claude, Cursor, rapid prototyping).",
       projects: "Ahmed has 4 real projects: DevicesArena (full-stack phone review platform), Muse AI (a Webflow SaaS landing page), Umrah Tours (a Webflow travel agency site with SEO work), and an Exam Portal (full-stack, vibe-coded, with a live leaderboard). Ask me about any one by name for more detail!",
       devicesarena: "DevicesArena (devicesarena.com) is a full-stack smartphone review and comparison platform Ahmed hand-coded end to end — device database, spec compare tool, custom auth, and a live news section.",
