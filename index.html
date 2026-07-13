@@ -68,7 +68,36 @@
 }
 </script>
 </head>
+
 <body>
+
+<!-- Page loader: shown immediately, hidden once the page has fully loaded -->
+<div id="page-loader">
+  <div class="loader-card">
+    <div class="loader-mark">AA</div>
+    <div class="loader-text">loading<span class="caret"></span></div>
+    <div class="loader-track"><div class="loader-bar"></div></div>
+  </div>
+</div>
+<script>
+(function(){
+  function hideLoader(){
+    var el = document.getElementById('page-loader');
+    if (!el) return;
+    el.classList.add('loader-hidden');
+    // Remove it from the DOM after the fade so it doesn't sit in the way (e.g. for screen readers/tab order).
+    el.addEventListener('transitionend', function(){ if (el.parentNode) el.parentNode.removeChild(el); }, { once:true });
+  }
+  if (document.readyState === 'complete') {
+    // Page already finished loading before this script ran.
+    setTimeout(hideLoader, 200);
+  } else {
+    window.addEventListener('load', function(){ setTimeout(hideLoader, 200); });
+    // Safety net in case 'load' never fires (e.g. a slow third-party asset) — reveal the site anyway.
+    setTimeout(hideLoader, 6000);
+  }
+})();
+</script>
 
 <div id="cursor-dot"></div>
 <div id="cursor-ring"></div>

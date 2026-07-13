@@ -744,3 +744,61 @@ footer{ border-top:1px solid var(--line); padding:32px 0; }
   .rings-row{ gap:14px 8px; }
   .sparkline-box{ flex-direction:column; align-items:flex-start; gap:12px; }
 }
+
+/* ============ PAGE LOADER — matches the "browser chrome" theme ============ */
+#page-loader{
+  position:fixed; inset:0; z-index:9999;
+  display:flex; align-items:center; justify-content:center;
+  background:var(--bg);
+  transition:opacity .5s ease, visibility .5s ease;
+}
+#page-loader .loader-card{
+  display:flex; flex-direction:column; align-items:center; gap:18px;
+}
+#page-loader .loader-mark{
+  width:56px; height:56px; border-radius:50%;
+  background:var(--accent);
+  display:flex; align-items:center; justify-content:center;
+  font-family:var(--font-mono); font-weight:700; font-size:20px; color:#fff;
+  box-shadow:var(--shadow-card);
+  animation:loader-pulse 1.6s ease-in-out infinite;
+}
+#page-loader .loader-text{
+  font-family:var(--font-mono); font-size:13px; color:var(--ink-soft);
+  letter-spacing:.02em; display:flex; align-items:center;
+}
+#page-loader .loader-text .caret{
+  display:inline-block; width:2px; height:1em;
+  background:var(--accent); margin-left:2px; vertical-align:-2px;
+  animation:blink 1s step-end infinite;
+}
+#page-loader .loader-track{
+  width:140px; height:3px; border-radius:2px;
+  background:var(--ring-track); overflow:hidden;
+}
+#page-loader .loader-bar{
+  height:100%; width:40%; border-radius:2px;
+  background:var(--accent);
+  animation:loader-slide 1.3s ease-in-out infinite;
+}
+
+@keyframes loader-pulse{
+  0%,100%{ transform:scale(1); opacity:1; }
+  50%{ transform:scale(1.08); opacity:.85; }
+}
+@keyframes loader-slide{
+  0%{ transform:translateX(-120%); }
+  50%{ transform:translateX(60%); }
+  100%{ transform:translateX(280%); }
+}
+
+/* Fade-out state, toggled by JS once the page has finished loading */
+#page-loader.loader-hidden{
+  opacity:0; visibility:hidden; pointer-events:none;
+}
+
+@media (prefers-reduced-motion:reduce){
+  #page-loader .loader-mark{ animation:none; }
+  #page-loader .loader-bar{ animation:none; width:100%; }
+  #page-loader .loader-text .caret{ animation:none; }
+}
