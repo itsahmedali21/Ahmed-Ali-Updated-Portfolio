@@ -517,10 +517,22 @@ nav.tabs a:hover{color:var(--accent);}
 }
 
 /* ============ EXPERTISE (4 pillars) ============ */
-.expertise-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit, minmax(230px, 1fr));
-  gap:24px;
+.expertise-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+}
+
+@media (max-width: 992px) {
+    .expertise-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .expertise-grid {
+        grid-template-columns: 1fr;
+    }
 }
 
 .expertise-card{
