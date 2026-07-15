@@ -12,6 +12,64 @@
 
 document.addEventListener('DOMContentLoaded', function () {
 
+
+
+  // -----------------------------------------------------------
+  // 0. CUSTOM CURSOR
+  // -----------------------------------------------------------
+  (function customCursor() {
+    const dot = document.getElementById('cursor-dot');
+    const ring = document.getElementById('cursor-ring');
+    if (!dot || !ring) return;
+    if (window.matchMedia && window.matchMedia('(hover: none)').matches) return;
+
+    let mouseX = window.innerWidth / 2;
+    let mouseY = window.innerHeight / 2;
+    let ringX = mouseX;
+    let ringY = mouseY;
+    let started = false;
+
+    function startRingLoop() {
+      if (started) return;
+      started = true;
+      requestAnimationFrame(tick);
+    }
+
+    function tick() {
+      ringX += (mouseX - ringX) * 0.18;
+      ringY += (mouseY - ringY) * 0.18;
+      ring.style.left = ringX + 'px';
+      ring.style.top = ringY + 'px';
+      requestAnimationFrame(tick);
+    }
+
+    window.addEventListener('mousemove', function (e) {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+      dot.style.left = mouseX + 'px';
+      dot.style.top = mouseY + 'px';
+      startRingLoop();
+    });
+
+    const hoverSelector = 'a, button, input, textarea, .btn, .project-card, ' +
+      '.expertise-card, .tool-hex, .testimonial-card, .stat-card, .social-row a';
+
+    document.addEventListener('mouseover', function (e) {
+      if (e.target.closest(hoverSelector)) ring.classList.add('hovered');
+    });
+    document.addEventListener('mouseout', function (e) {
+      if (e.target.closest(hoverSelector)) ring.classList.remove('hovered');
+    });
+
+    document.addEventListener('mouseleave', function () {
+      dot.style.opacity = '0';
+      ring.style.opacity = '0';
+    });
+    document.addEventListener('mouseenter', function () {
+      dot.style.opacity = '1';
+      ring.style.opacity = '';
+    });
+  })();
   // -----------------------------------------------------------
   // 1. THEME TOGGLE
   // -----------------------------------------------------------
