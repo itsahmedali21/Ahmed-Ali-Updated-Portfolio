@@ -353,9 +353,17 @@ document.addEventListener('DOMContentLoaded', function () {
       return el;
     }
 
+    const submitBtn = form.querySelector('button[type="submit"]');
+
     async function sendToAI(userText) {
       history.push({ role: 'user', content: userText });
       history = history.slice(-12); // keep last 12 turns, matches server cap
+
+      // Lock the input while we wait, so a visitor can't fire off several
+      // requests before the first reply even arrives (this alone can burn
+      // through the free-tier per-minute limit in seconds).
+      input.disabled = true;
+      if (submitBtn) submitBtn.disabled = true;
 
       const typingEl = addTyping();
       let data;
@@ -369,6 +377,9 @@ document.addEventListener('DOMContentLoaded', function () {
       } catch (err) {
         typingEl.remove();
         addMessage("Couldn't reach the chat service right now — please try again in a moment.", 'error');
+        input.disabled = false;
+        if (submitBtn) submitBtn.disabled = false;
+        input.focus();
         return;
       }
 
@@ -376,17 +387,23 @@ document.addEventListener('DOMContentLoaded', function () {
 
       if (data.error) {
         addMessage(data.error, 'error');
+        input.disabled = false;
+        if (submitBtn) submitBtn.disabled = false;
+        input.focus();
         return;
       }
 
       addMessage(data.reply, 'bot');
       history.push({ role: 'assistant', content: data.reply });
+      input.disabled = false;
+      if (submitBtn) submitBtn.disabled = false;
+      input.focus();
     }
 
     form.addEventListener('submit', function (e) {
       e.preventDefault();
       const value = input.value.trim();
-      if (!value) return;
+      if (!value || input.disabled) return;
       addMessage(value, 'user');
       input.value = '';
       sendToAI(value);

@@ -152,18 +152,31 @@ $payload = json_encode([
 
 $url = 'https://generativelanguage.googleapis.com/v1beta/models/' . MODEL . ':generateContent?key=' . GEMINI_API_KEY;
 
-$ch = curl_init($url);
-curl_setopt_array($ch, [
-    CURLOPT_RETURNTRANSFER => true,
-    CURLOPT_POST => true,
-    CURLOPT_POSTFIELDS => $payload,
-    CURLOPT_TIMEOUT => 30,
-    CURLOPT_HTTPHEADER => ['Content-Type: application/json'],
-]);
-$response = curl_exec($ch);
-$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-$curlError = curl_error($ch);
-curl_close($ch);
+function callGemini($url, $payload) {
+    $ch = curl_init($url);
+    curl_setopt_array($ch, [
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_POST => true,
+        CURLOPT_POSTFIELDS => $payload,
+        CURLOPT_TIMEOUT => 30,
+        CURLOPT_HTTPHEADER => ['Content-Type: application/json'],
+    ]);
+    $response = curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    $curlError = curl_error($ch);
+    curl_close($ch);
+    return [$response, $httpCode, $curlError];
+}
+
+[$response, $httpCode, $curlError] = callGemini($url, $payload);
+
+// One automatic retry on a rate-limit hit (429) after a short pause — this
+// smooths over brief bursts (e.g. a visitor sending a couple of messages
+// quickly) without the visitor ever seeing an error.
+if ($httpCode === 429) {
+    usleep(1500000); // 1.5s
+    [$response, $httpCode, $curlError] = callGemini($url, $payload);
+}
 
 if ($response === false) {
     echo json_encode(['error' => 'Could not reach the AI service: ' . $curlError]);

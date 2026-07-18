@@ -120,18 +120,32 @@ module.exports = async (req, res) => {
   // 4. Call the Gemini API server-side
   try {
     const url = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${apiKey}`;
-    const response = await fetch(url, {
+    const requestBody = JSON.stringify({
+      contents,
+      systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
+      generationConfig: {
+        maxOutputTokens: 512,
+        thinkingConfig: { thinkingBudget: 0 },
+      },
+    });
+
+    let response = await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        contents,
-        systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
-        generationConfig: {
-          maxOutputTokens: 512,
-          thinkingConfig: { thinkingBudget: 0 },
-        },
-      }),
+      body: requestBody,
     });
+
+    // One automatic retry on a rate-limit hit (429) after a short pause —
+    // this smooths over brief bursts without the visitor ever seeing an
+    // error.
+    if (response.status === 429) {
+      await new Promise((r) => setTimeout(r, 1500));
+      response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: requestBody,
+      });
+    }
 
     const data = await response.json();
 
