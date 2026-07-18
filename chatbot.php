@@ -137,7 +137,10 @@ $contents = array_map(function ($m) {
 $payload = json_encode([
     'contents' => $contents,
     'systemInstruction' => ['parts' => [['text' => SYSTEM_PROMPT]]],
-    'generationConfig' => ['maxOutputTokens' => 300],
+    'generationConfig' => [
+        'maxOutputTokens' => 512,
+        'thinkingConfig' => ['thinkingBudget' => 0],
+    ],
 ]);
 
 $url = 'https://generativelanguage.googleapis.com/v1beta/models/' . MODEL . ':generateContent?key=' . GEMINI_API_KEY;
