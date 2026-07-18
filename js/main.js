@@ -313,7 +313,7 @@ document.addEventListener('DOMContentLoaded', function () {
       const typingEl = addTyping();
       let data;
       try {
-        const res = await fetch('chatbot.php', {
+        const res = await fetch('/api/chatbot', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ messages: history })
