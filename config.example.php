@@ -10,5 +10,5 @@ const SMTP_PASSWORD = 'your 16 char app password';
 const TO_EMAIL       = 'you@gmail.com';
 const TO_NAME        = 'Your Name';
 
-// Get a key at https://console.anthropic.com -> API Keys
-const ANTHROPIC_API_KEY = 'sk-ant-REPLACE-ME';
+// Get a free key (no credit card) at https://aistudio.google.com/apikey
+const GEMINI_API_KEY = 'PASTE_YOUR_FREE_GEMINI_KEY_HERE';

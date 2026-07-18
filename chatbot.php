@@ -2,36 +2,35 @@
 /**
  * chatbot.php
  * Backend for the portfolio chat widget. Receives the visitor's message +
- * short conversation history, calls the Claude API server-side (so your
- * API key never reaches the browser), and returns Claude's reply as JSON.
+ * short conversation history, calls the Google Gemini API server-side (so
+ * your API key never reaches the browser), and returns the reply as JSON.
  *
  * ---- ONE-TIME SETUP ----
- * 1. Get an API key at https://console.anthropic.com -> API Keys.
- * 2. Paste it into ANTHROPIC_API_KEY in config.php.
+ * 1. Get a free API key at https://aistudio.google.com/apikey (no credit
+ *    card needed).
+ * 2. Paste it into GEMINI_API_KEY in config.php.
  * 3. That's it. The widget checks for the placeholder key and shows a
  *    friendly "not configured yet" message until you add a real one.
  *
  * ---- WHY THIS EXISTS SERVER-SIDE ----
- * The Claude API must be called with a secret API key. Calling it directly
+ * The Gemini API must be called with a secret API key. Calling it directly
  * from the browser would expose that key to anyone who opens dev tools.
  * This file holds the key server-side and the browser only ever talks to
- * chatbot.php, never to api.anthropic.com directly.
+ * chatbot.php, never to Google directly.
  *
  * ---- COST NOTE ----
- * Every message a visitor sends costs a small amount on your Anthropic
- * account (this uses Claude Haiku, the cheapest current model, to keep
- * that cost low). There's a simple per-visitor session cap below
- * (MAX_MESSAGES_PER_SESSION) so one visitor can't run up a large bill by
- * accident. Keep an eye on usage at https://console.anthropic.com.
+ * Gemini's free tier (2.5 Flash) allows a generous number of free
+ * requests per day with no credit card on file. There's still a simple
+ * per-visitor session cap below (MAX_MESSAGES_PER_SESSION) so one visitor
+ * can't send an unreasonable number of messages in one sitting.
  */
 
 header('Content-Type: application/json');
 require __DIR__ . '/config.php';
 
-const MODEL = 'claude-haiku-4-5-20251001';
-const MAX_TOKENS = 300;
+const MODEL = 'gemini-2.5-flash';
 const MAX_MESSAGES_PER_SESSION = 20;
-const MAX_HISTORY_MESSAGES = 12; // how many recent turns we send back to Claude for context
+const MAX_HISTORY_MESSAGES = 12; // how many recent turns we send back to Gemini for context
 
 const SYSTEM_PROMPT = <<<PROMPT
 You are the assistant on Ahmed Ali's portfolio website. You help visitors
@@ -80,9 +79,9 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 // 2. Friendly message if the key hasn't been set up yet
-if (!defined('ANTHROPIC_API_KEY') || ANTHROPIC_API_KEY === '' || ANTHROPIC_API_KEY === 'sk-ant-REPLACE-ME') {
+if (!defined('GEMINI_API_KEY') || GEMINI_API_KEY === '' || GEMINI_API_KEY === 'PASTE_YOUR_NEW_API_KEY_HERE') {
     echo json_encode([
-        'error' => "The chat assistant isn't configured yet — add a real ANTHROPIC_API_KEY in config.php to turn it on."
+        'error' => "The chat assistant isn't configured yet — add a real GEMINI_API_KEY in config.php to turn it on."
     ]);
     exit;
 }
@@ -125,25 +124,31 @@ if (empty($cleanHistory)) {
 
 $_SESSION['chat_count']++;
 
-// 5. Call the Claude API server-side
+// Gemini uses "user" / "model" roles (not "assistant"), and a `contents`
+// array of {role, parts:[{text}]} instead of Anthropic-style messages.
+$contents = array_map(function ($m) {
+    return [
+        'role' => $m['role'] === 'assistant' ? 'model' : 'user',
+        'parts' => [['text' => $m['content']]],
+    ];
+}, $cleanHistory);
+
+// 5. Call the Gemini API server-side
 $payload = json_encode([
-    'model' => MODEL,
-    'max_tokens' => MAX_TOKENS,
-    'system' => SYSTEM_PROMPT,
-    'messages' => $cleanHistory,
+    'contents' => $contents,
+    'systemInstruction' => ['parts' => [['text' => SYSTEM_PROMPT]]],
+    'generationConfig' => ['maxOutputTokens' => 300],
 ]);
 
-$ch = curl_init('https://api.anthropic.com/v1/messages');
+$url = 'https://generativelanguage.googleapis.com/v1beta/models/' . MODEL . ':generateContent?key=' . GEMINI_API_KEY;
+
+$ch = curl_init($url);
 curl_setopt_array($ch, [
     CURLOPT_RETURNTRANSFER => true,
     CURLOPT_POST => true,
     CURLOPT_POSTFIELDS => $payload,
     CURLOPT_TIMEOUT => 30,
-    CURLOPT_HTTPHEADER => [
-        'Content-Type: application/json',
-        'x-api-key: ' . ANTHROPIC_API_KEY,
-        'anthropic-version: 2023-06-01',
-    ],
+    CURLOPT_HTTPHEADER => ['Content-Type: application/json'],
 ]);
 $response = curl_exec($ch);
 $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
@@ -164,10 +169,8 @@ if ($httpCode !== 200) {
 }
 
 $reply = '';
-foreach (($data['content'] ?? []) as $block) {
-    if (($block['type'] ?? '') === 'text') {
-        $reply .= $block['text'];
-    }
+foreach (($data['candidates'][0]['content']['parts'] ?? []) as $part) {
+    $reply .= $part['text'] ?? '';
 }
 
 if ($reply === '') {

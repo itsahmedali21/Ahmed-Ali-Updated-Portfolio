@@ -1,37 +1,30 @@
 /**
  * api/chatbot.js
  * Vercel Serverless Function — backend for the portfolio chat widget.
- *
- * This replaces chatbot.php. Vercel does not execute PHP files, so this
- * is the version that actually runs when the site is deployed there.
- * Any file inside /api automatically becomes an endpoint on Vercel:
- * this one is reachable at  https://your-site.vercel.app/api/chatbot
+ * Uses Google's Gemini API (free tier, no credit card needed).
  *
  * ---- ONE-TIME SETUP ----
- * 1. Get an API key at https://console.anthropic.com -> API Keys.
- * 2. In the Vercel dashboard: your project -> Settings -> Environment
- *    Variables -> add ANTHROPIC_API_KEY with your key as the value.
- * 3. Redeploy (Vercel does this automatically on every push, or use the
- *    "Redeploy" button). That's it.
+ * 1. Go to https://aistudio.google.com/apikey
+ * 2. Sign in with a Google account, click "Create API key" (no card needed).
+ * 3. In the Vercel dashboard: your project -> Settings -> Environment
+ *    Variables -> add GEMINI_API_KEY with that key as the value.
+ * 4. Redeploy (Vercel only picks up env vars on a new build).
  *
  * ---- WHY THIS EXISTS SERVER-SIDE ----
- * The Claude API must be called with a secret API key. Calling it directly
+ * The Gemini API must be called with a secret API key. Calling it directly
  * from the browser would expose that key to anyone who opens dev tools.
  * This function holds the key server-side (as a Vercel env variable) and
- * the browser only ever talks to /api/chatbot, never to api.anthropic.com
- * directly.
+ * the browser only ever talks to /api/chatbot, never to Google directly.
  *
  * ---- COST NOTE ----
- * Every message a visitor sends costs a small amount on your Anthropic
- * account (this uses Claude Haiku, the cheapest current model, to keep
- * that cost low). There's a simple per-request message-count cap below
- * so one visitor can't send an enormous conversation in one go. Keep an
- * eye on usage at console.anthropic.com — it's pay-as-you-go, not free.
+ * Gemini 2.5 Flash's free tier (as of 2026) allows a generous number of
+ * free requests per day with no credit card on file. There's still a
+ * simple per-request message-count cap below so one visitor can't send
+ * an enormous conversation in one go.
  */
 
-const MODEL = 'claude-haiku-4-5-20251001';
-const MAX_TOKENS = 300;
-const MAX_HISTORY_MESSAGES = 12; // how many recent turns we send to Claude for context
+const MODEL = 'gemini-2.5-flash';
+const MAX_HISTORY_MESSAGES = 12; // how many recent turns we send to Gemini for context
 
 const SYSTEM_PROMPT = `You are the assistant on Ahmed Ali's portfolio website. You help visitors
 learn about Ahmed and figure out if he's a good fit for their project.
@@ -78,10 +71,10 @@ module.exports = async (req, res) => {
   }
 
   // 2. Friendly message if the key hasn't been set up yet
-  const apiKey = process.env.ANTHROPIC_API_KEY;
+  const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) {
     res.status(200).json({
-      error: "The chat assistant isn't configured yet — add ANTHROPIC_API_KEY in your Vercel project's Environment Variables to turn it on."
+      error: "The chat assistant isn't configured yet — add GEMINI_API_KEY in your Vercel project's Environment Variables to turn it on."
     });
     return;
   }
@@ -110,20 +103,23 @@ module.exports = async (req, res) => {
     return;
   }
 
-  // 4. Call the Claude API server-side
+  // Gemini uses "user" / "model" roles (not "assistant"), and a
+  // `contents` array instead of Anthropic-style `messages`.
+  const contents = cleanHistory.map((m) => ({
+    role: m.role === 'assistant' ? 'model' : 'user',
+    parts: [{ text: m.content }],
+  }));
+
+  // 4. Call the Gemini API server-side
   try {
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${apiKey}`;
+    const response = await fetch(url, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': apiKey,
-        'anthropic-version': '2023-06-01',
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: MODEL,
-        max_tokens: MAX_TOKENS,
-        system: SYSTEM_PROMPT,
-        messages: cleanHistory,
+        contents,
+        systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
+        generationConfig: { maxOutputTokens: 300 },
       }),
     });
 
@@ -135,10 +131,7 @@ module.exports = async (req, res) => {
       return;
     }
 
-    let reply = '';
-    for (const block of data.content || []) {
-      if (block.type === 'text') reply += block.text;
-    }
+    const reply = data?.candidates?.[0]?.content?.parts?.map((p) => p.text || '').join('') || '';
 
     if (!reply) {
       res.status(200).json({ error: 'The AI service returned an empty response.' });
