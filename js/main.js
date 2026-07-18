@@ -272,7 +272,7 @@ document.addEventListener('DOMContentLoaded', function () {
   })();
 
   // -----------------------------------------------------------
-  // 7. LOCAL RULE-BASED CHATBOT (no API, no backend)
+  // 7. AI CHATBOT — real Claude API, via chatbot.php on the server
   // -----------------------------------------------------------
   (function chatbot() {
     const form = document.getElementById('chatbot-form');
@@ -284,49 +284,56 @@ document.addEventListener('DOMContentLoaded', function () {
     const widget = document.getElementById('chatbot-widget');
     if (!form || !input || !messages) return;
 
-    const FACTS = {
-      intro: "I'm Ahmed's portfolio assistant. Ask me about his skills, his projects, or how to reach him!",
-      about: "I'm Ahmed's portfolio assistant. Ask me about his skills, his projects, or how to reach him!",
-      skills: "Ahmed works across four areas: Frontend (HTML5, CSS3, JavaScript, React), Webflow (CMS, Custom Interactions, Client Handoff), SEO (Technical SEO, On-Page SEO, Core Web Vitals, Keyword Research), and Vibe Coding (AI-assisted development with Claude, Cursor, rapid prototyping).",
-      projects: "Ahmed has 4 real projects: DevicesArena (full-stack phone review platform), Muse AI (a Webflow SaaS landing page), Umrah Tours (a Webflow travel agency site with SEO work), and an Exam Portal (full-stack, vibe-coded, with a live leaderboard). Ask me about any one by name for more detail!",
-      devicesarena: "DevicesArena (devicesarena.com) is a full-stack smartphone review and comparison platform Ahmed hand-coded end to end — device database, spec compare tool, custom auth, and a live news section.",
-      museai: "Muse AI (muse-ai-ahmed.webflow.io) is an AI SaaS landing page built entirely in Webflow, with animated stat counters and pricing tables.",
-      umrahtours: "Umrah Tours (umrah-tours.webflow.io) is a travel-agency site for Umrah packages, built in Webflow with on-page SEO across every page.",
-      examportal: "The Exam Portal (exam-portal.infinityfreeapp.com) is a full-stack exam portal with student login and a live leaderboard powered by its own PHP API — vibe-coded from idea to a deployed app.",
-      contact: "Best way to reach Ahmed is the Contact form on this page, or the WhatsApp button in the bottom-right corner. He usually replies within a day or two.",
-      rates: "I don't have exact rates or availability dates — please use the Contact form or WhatsApp button and Ahmed will get back to you directly.",
-      fallback: "I'm not sure about that one. I can tell you about Ahmed's skills, his projects, or how to get in touch — or use the Contact form / WhatsApp button for anything specific."
-    };
-
-    const INTENTS = [
-      { keywords: ['hello', 'hi', 'hey', 'salam', 'assalam'], reply: FACTS.intro },
-      { keywords: ['devicesarena', 'device arena', 'phone review', 'smartphone'], reply: FACTS.devicesarena },
-      { keywords: ['muse ai', 'museai', 'saas landing'], reply: FACTS.museai },
-      { keywords: ['umrah', 'travel agency', 'pilgrimage'], reply: FACTS.umrahtours },
-      { keywords: ['exam portal', 'leaderboard', 'exam'], reply: FACTS.examportal },
-      { keywords: ['project', 'portfolio', 'work', 'built'], reply: FACTS.projects },
-      { keywords: ['skill', 'tech', 'stack', 'react', 'webflow', 'seo', 'vibe cod'], reply: FACTS.skills },
-      { keywords: ['rate', 'price', 'cost', 'charge', 'budget'], reply: FACTS.rates },
-      { keywords: ['contact', 'reach', 'hire', 'email', 'whatsapp', 'talk'], reply: FACTS.contact },
-      { keywords: ['thank'], reply: "You're welcome! Anything else you'd like to know about Ahmed?" }
-    ];
-
-    function getReply(message) {
-      const text = message.toLowerCase();
-      for (let i = 0; i < INTENTS.length; i++) {
-        if (INTENTS[i].keywords.some(function (k) { return text.includes(k); })) {
-          return INTENTS[i].reply;
-        }
-      }
-      return FACTS.fallback;
-    }
+    // Keep a running history so the AI has context across turns.
+    // (chatbot.php also trims this server-side, but we cap it here too.)
+    let history = [];
 
     function addMessage(text, sender) {
       const el = document.createElement('div');
-      el.className = 'chatbot-msg ' + (sender === 'user' ? 'user' : 'bot');
+      el.className = 'chatbot-msg ' + (sender === 'user' ? 'user' : sender === 'error' ? 'bot error' : 'bot');
       el.textContent = text;
       messages.appendChild(el);
       messages.scrollTop = messages.scrollHeight;
+      return el;
+    }
+
+    function addTyping() {
+      const el = document.createElement('div');
+      el.className = 'chatbot-msg bot typing';
+      el.innerHTML = '<span></span><span></span><span></span>';
+      messages.appendChild(el);
+      messages.scrollTop = messages.scrollHeight;
+      return el;
+    }
+
+    async function sendToAI(userText) {
+      history.push({ role: 'user', content: userText });
+      history = history.slice(-12); // keep last 12 turns, matches server cap
+
+      const typingEl = addTyping();
+      let data;
+      try {
+        const res = await fetch('chatbot.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ messages: history })
+        });
+        data = await res.json();
+      } catch (err) {
+        typingEl.remove();
+        addMessage("Couldn't reach the chat service right now — please try again in a moment.", 'error');
+        return;
+      }
+
+      typingEl.remove();
+
+      if (data.error) {
+        addMessage(data.error, 'error');
+        return;
+      }
+
+      addMessage(data.reply, 'bot');
+      history.push({ role: 'assistant', content: data.reply });
     }
 
     form.addEventListener('submit', function (e) {
@@ -335,7 +342,7 @@ document.addEventListener('DOMContentLoaded', function () {
       if (!value) return;
       addMessage(value, 'user');
       input.value = '';
-      setTimeout(function () { addMessage(getReply(value), 'bot'); }, 300);
+      sendToAI(value);
     });
 
     if (toggle && widget) {
