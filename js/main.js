@@ -288,10 +288,25 @@ document.addEventListener('DOMContentLoaded', function () {
     // (chatbot.php also trims this server-side, but we cap it here too.)
     let history = [];
 
+    // Escapes HTML first (so nothing can inject markup), then wraps any
+    // URL-looking text in a real, clickable, safe <a> tag.
+    function linkify(text) {
+      const escaped = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      const urlRegex = /(https?:\/\/[^\s<]+)|(\b[a-zA-Z0-9-]+\.(?:com|io|dev|net|org|app)(?:\/[^\s<]*)?\b)/g;
+      return escaped.replace(urlRegex, function (match) {
+        const href = /^https?:\/\//i.test(match) ? match : 'https://' + match;
+        return '<a href="' + href + '" target="_blank" rel="noopener noreferrer">' + match + '</a>';
+      });
+    }
+
     function addMessage(text, sender) {
       const el = document.createElement('div');
       el.className = 'chatbot-msg ' + (sender === 'user' ? 'user' : sender === 'error' ? 'bot error' : 'bot');
-      el.textContent = text;
+      if (sender === 'user') {
+        el.textContent = text; // user's own text never needs to be clickable
+      } else {
+        el.innerHTML = linkify(text);
+      }
       messages.appendChild(el);
       messages.scrollTop = messages.scrollHeight;
       return el;
@@ -348,6 +363,9 @@ document.addEventListener('DOMContentLoaded', function () {
     if (toggle && widget) {
       toggle.addEventListener('click', function () {
         widget.classList.toggle('open');
+        if (widget.classList.contains('open')) {
+          messages.scrollTop = messages.scrollHeight;
+        }
       });
     }
     if (minimize && widget) {
