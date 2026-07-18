@@ -173,8 +173,18 @@ if ($response === false) {
 $data = json_decode($response, true);
 
 if ($httpCode !== 200) {
-    $apiMsg = $data['error']['message'] ?? 'Unknown error from the AI service.';
-    echo json_encode(['error' => $apiMsg]);
+    if ($httpCode === 429) {
+        echo json_encode([
+            'error' => "The chat assistant is a bit busy right now (too many messages at once). Please wait a moment and try again."
+        ]);
+        exit;
+    }
+    // Log the real error server-side for debugging, but never show Google's
+    // raw internal error text to visitors.
+    error_log('Gemini API error (' . $httpCode . '): ' . ($data['error']['message'] ?? $response));
+    echo json_encode([
+        'error' => "The chat assistant hit a temporary problem. Please try again in a moment, or use the Contact form / WhatsApp button."
+    ]);
     exit;
 }
 

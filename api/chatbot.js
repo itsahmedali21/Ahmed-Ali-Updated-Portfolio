@@ -136,8 +136,18 @@ module.exports = async (req, res) => {
     const data = await response.json();
 
     if (!response.ok) {
-      const apiMsg = data?.error?.message || 'Unknown error from the AI service.';
-      res.status(200).json({ error: apiMsg });
+      if (response.status === 429) {
+        res.status(200).json({
+          error: 'The chat assistant is a bit busy right now (too many messages at once). Please wait a moment and try again.'
+        });
+        return;
+      }
+      // Log the real error server-side for debugging, but never show
+      // Google's raw internal error text to visitors.
+      console.error('Gemini API error (' + response.status + '):', data?.error?.message || data);
+      res.status(200).json({
+        error: 'The chat assistant hit a temporary problem. Please try again in a moment, or use the Contact form / WhatsApp button.'
+      });
       return;
     }
 
