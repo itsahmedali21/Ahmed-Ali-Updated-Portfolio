@@ -294,8 +294,30 @@ document.addEventListener('DOMContentLoaded', function () {
       const escaped = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
       const urlRegex = /(https?:\/\/[^\s<]+)|(\b[a-zA-Z0-9-]+\.(?:com|io|dev|net|org|app)(?:\/[^\s<]*)?\b)/g;
       return escaped.replace(urlRegex, function (match) {
-        const href = /^https?:\/\//i.test(match) ? match : 'https://' + match;
-        return '<a href="' + href + '" target="_blank" rel="noopener noreferrer">' + match + '</a>';
+        // Peel off trailing punctuation (: . , ; ! ? " ' etc.) that belongs
+        // to the sentence, not the URL — e.g. "(https://site.com):" should
+        // link only "https://site.com" and leave "):" as plain text after it.
+        let url = match;
+        let trailing = '';
+        while (url.length > 0) {
+          const lastChar = url[url.length - 1];
+          if (lastChar === ')') {
+            // Only strip a trailing ")" if it's unmatched inside this URL
+            // (so URLs that legitimately end in a balanced paren still work).
+            const opens = (url.match(/\(/g) || []).length;
+            const closes = (url.match(/\)/g) || []).length;
+            if (closes <= opens) break;
+            trailing = lastChar + trailing;
+            url = url.slice(0, -1);
+          } else if (/[.,:;!?'"\]]/.test(lastChar)) {
+            trailing = lastChar + trailing;
+            url = url.slice(0, -1);
+          } else {
+            break;
+          }
+        }
+        const href = /^https?:\/\//i.test(url) ? url : 'https://' + url;
+        return '<a href="' + href + '" target="_blank" rel="noopener noreferrer">' + url + '</a>' + trailing;
       });
     }
 
