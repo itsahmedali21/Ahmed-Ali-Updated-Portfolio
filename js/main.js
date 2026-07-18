@@ -299,6 +299,16 @@ document.addEventListener('DOMContentLoaded', function () {
       });
     }
 
+    // Scrolls just enough so the new message's TOP lands at the top of the
+    // visible chat window, instead of jumping straight to the very bottom.
+    // This way a long reply starts where it should, and the user can scroll
+    // further down themselves if they want to read the rest.
+    function scrollToMessageStart(el) {
+      const targetTop = el.offsetTop - messages.offsetTop;
+      const maxScroll = messages.scrollHeight - messages.clientHeight;
+      messages.scrollTop = Math.min(targetTop, maxScroll);
+    }
+
     function addMessage(text, sender) {
       const el = document.createElement('div');
       el.className = 'chatbot-msg ' + (sender === 'user' ? 'user' : sender === 'error' ? 'bot error' : 'bot');
@@ -308,7 +318,7 @@ document.addEventListener('DOMContentLoaded', function () {
         el.innerHTML = linkify(text);
       }
       messages.appendChild(el);
-      messages.scrollTop = messages.scrollHeight;
+      scrollToMessageStart(el);
       return el;
     }
 
@@ -317,7 +327,7 @@ document.addEventListener('DOMContentLoaded', function () {
       el.className = 'chatbot-msg bot typing';
       el.innerHTML = '<span></span><span></span><span></span>';
       messages.appendChild(el);
-      messages.scrollTop = messages.scrollHeight;
+      scrollToMessageStart(el);
       return el;
     }
 
@@ -363,8 +373,8 @@ document.addEventListener('DOMContentLoaded', function () {
     if (toggle && widget) {
       toggle.addEventListener('click', function () {
         widget.classList.toggle('open');
-        if (widget.classList.contains('open')) {
-          messages.scrollTop = messages.scrollHeight;
+        if (widget.classList.contains('open') && messages.lastElementChild) {
+          scrollToMessageStart(messages.lastElementChild);
         }
       });
     }
