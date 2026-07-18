@@ -23,7 +23,7 @@
  * an enormous conversation in one go.
  */
 
-const MODEL = 'gemini-2.5-flash';
+const MODEL = 'gemini-flash-latest';
 const MAX_HISTORY_MESSAGES = 12; // how many recent turns we send to Gemini for context
 
 const SYSTEM_PROMPT = `You are the assistant on Ahmed Ali's portfolio website. You help visitors
