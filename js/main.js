@@ -288,12 +288,16 @@ document.addEventListener('DOMContentLoaded', function () {
     // (chatbot.php also trims this server-side, but we cap it here too.)
     let history = [];
 
-    // Escapes HTML first (so nothing can inject markup), then wraps any
-    // URL-looking text in a real, clickable, safe <a> tag.
-    function linkify(text) {
-      const escaped = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-      const urlRegex = /(https?:\/\/[^\s<]+)|(\b[a-zA-Z0-9-]+\.(?:com|io|dev|net|org|app)(?:\/[^\s<]*)?\b)/g;
-      return escaped.replace(urlRegex, function (match) {
+    // Escapes HTML, converts **bold**, turns URLs into safe pill-style
+    // links, and turns "- " lines into a real bulleted list — instead of
+    // dumping everything as one dense paragraph.
+    function escapeHtml(text) {
+      return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    function linkifyLine(line) {
+      const urlRegex = /(https?:\/\/[^\s<]+)|(\b(?:[a-zA-Z0-9-]+\.)+(?:com|io|dev|net|org|app)(?:\/[^\s<]*)?\b)/g;
+      return line.replace(urlRegex, function (match) {
         // Peel off trailing punctuation (: . , ; ! ? " ' etc.) that belongs
         // to the sentence, not the URL — e.g. "(https://site.com):" should
         // link only "https://site.com" and leave "):" as plain text after it.
@@ -302,8 +306,6 @@ document.addEventListener('DOMContentLoaded', function () {
         while (url.length > 0) {
           const lastChar = url[url.length - 1];
           if (lastChar === ')') {
-            // Only strip a trailing ")" if it's unmatched inside this URL
-            // (so URLs that legitimately end in a balanced paren still work).
             const opens = (url.match(/\(/g) || []).length;
             const closes = (url.match(/\)/g) || []).length;
             if (closes <= opens) break;
@@ -317,8 +319,48 @@ document.addEventListener('DOMContentLoaded', function () {
           }
         }
         const href = /^https?:\/\//i.test(url) ? url : 'https://' + url;
-        return '<a href="' + href + '" target="_blank" rel="noopener noreferrer">' + url + '</a>' + trailing;
+        const label = url.replace(/^https?:\/\/(www\.)?/i, '');
+        return '<a class="chat-link" href="' + href + '" target="_blank" rel="noopener noreferrer">' +
+               label + '<span class="chat-link-arrow">↗</span></a>' + trailing;
       });
+    }
+
+    function richText(raw) {
+      let text = escapeHtml(raw);
+      text = text.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+
+      const lines = text.split('\n');
+      let html = '';
+      let list = [];
+      let para = [];
+      const flushList = function () {
+        if (list.length) {
+          html += '<ul class="chat-list">' + list.map(function (li) { return '<li>' + li + '</li>'; }).join('') + '</ul>';
+          list = [];
+        }
+      };
+      const flushPara = function () {
+        if (para.length) {
+          html += '<p>' + para.join('<br>') + '</p>';
+          para = [];
+        }
+      };
+
+      lines.forEach(function (rawLine) {
+        const line = rawLine.trim();
+        if (line === '') { flushList(); flushPara(); return; }
+        const bullet = line.match(/^[-*•]\s+(.*)$/);
+        if (bullet) {
+          flushPara();
+          list.push(linkifyLine(bullet[1]));
+        } else {
+          flushList();
+          para.push(linkifyLine(line));
+        }
+      });
+      flushList();
+      flushPara();
+      return html || '<p></p>';
     }
 
     // Scrolls just enough so the new message's TOP lands at the top of the
@@ -337,7 +379,7 @@ document.addEventListener('DOMContentLoaded', function () {
       if (sender === 'user') {
         el.textContent = text; // user's own text never needs to be clickable
       } else {
-        el.innerHTML = linkify(text);
+        el.innerHTML = richText(text);
       }
       messages.appendChild(el);
       scrollToMessageStart(el);
