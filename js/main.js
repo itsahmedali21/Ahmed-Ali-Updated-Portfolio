@@ -399,7 +399,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     async function sendToAI(userText) {
       history.push({ role: 'user', content: userText });
-      history = history.slice(-12); // keep last 12 turns, matches server cap
+      history = history.slice(-8); // keep last 8 turns, matches server cap
 
       // Lock the input while we wait, so a visitor can't fire off several
       // requests before the first reply even arrives (this alone can burn

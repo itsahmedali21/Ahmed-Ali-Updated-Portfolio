@@ -28,9 +28,9 @@
 header('Content-Type: application/json');
 require __DIR__ . '/config.php';
 
-const MODEL = 'gemini-flash-latest';
+const MODEL = 'gemini-3.5-flash-lite';
 const MAX_MESSAGES_PER_SESSION = 20;
-const MAX_HISTORY_MESSAGES = 12; // how many recent turns we send back to Gemini for context
+const MAX_HISTORY_MESSAGES = 8; // how many recent turns we send back to Gemini for context
 
 const SYSTEM_PROMPT = <<<PROMPT
 You are the assistant on Ahmed Ali's portfolio website. You help visitors
