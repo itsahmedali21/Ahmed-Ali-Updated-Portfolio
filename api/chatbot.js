@@ -130,8 +130,7 @@ module.exports = async (req, res) => {
       contents,
       systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
       generationConfig: {
-        maxOutputTokens: 512,
-        thinkingConfig: { thinkingBudget: 0 },
+        maxOutputTokens: 1024,
       },
     });
 
